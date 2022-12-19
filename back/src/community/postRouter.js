@@ -1,6 +1,7 @@
 import is from "@sindresorhus/is";
 import { Router } from "express";
 import { postService } from "./communityService.js";
+import { personService } from "./communityService.js";
 import { ErrorMessage } from "../middlewares/errorMiddleware.js";
 
 const postRouter = Router();
@@ -75,6 +76,29 @@ postRouter.get("/postsDetail/:postId", async function (req, res, next) {
         next(error);
     }
 });
+
+//해당 게시글 조회
+// postRouter.get(
+//     "/postsDetail/:postId/:id/:email",
+//     async function (req, res, next) {
+//         try {
+//             const post_id = req.params.postId;
+//             const user_id = req.params.id;
+//             const email = req.params.email;
+
+//             const posts = await postService.getAPosts({ post_id });
+//             const being = await personService.beingIsPerson({
+//                 post_id,
+//                 email,
+//                 user_id,
+//             });
+
+//             res.status(200).send({ posts, being });
+//         } catch (error) {
+//             next(error);
+//         }
+//     }
+// );
 
 //게시글 수정
 postRouter.put("/posts/:postId", async function (req, res, next) {

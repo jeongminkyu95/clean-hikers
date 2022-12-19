@@ -526,22 +526,22 @@ class personService {
         }
     }
 
-    // static async beingPerson({ post_id, email, user_id }) {
-    //     const post = await postService.getAPosts({ post_id });
+    static async beingIsPerson({ post_id, email, user_id }) {
+        const post = await postService.getAPosts({ post_id });
 
-    //     if (post.user_id == user_id) {
-    //         const errorMessage = "참여하실 수 없습니다.";
-    //         return { errorMessage };
-    //     } else {
-    //         const person = post.person;
-    //         const being = person.map((item) => (item.email = email));
-    //         if (being.length) {
-    //             return "1";
-    //         } else {
-    //             return "0";
-    //         }
-    //     }
-    // }
+        if (post.user_id == user_id) {
+            const errorMessage = "참여하실 수 없습니다.";
+            return { errorMessage };
+        } else {
+            const person = post.person;
+            const being = person.filter((item) => item.email == email);
+            if (being.length) {
+                return "1";
+            } else {
+                return "0";
+            }
+        }
+    }
 }
 
 class locationService {

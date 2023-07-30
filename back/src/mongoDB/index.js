@@ -14,10 +14,11 @@ import dotenv from "dotenv";
 dotenv.config({ path: path.join(__dirname, "../../../.env") });
 
 console.log(__dirname);
-const { MONGO_URI } = process.env;
-console.log(MONGO_URI);
+const MONGODB_URL =
+  process.env.MONGODB_URL ||
+  "MongoDB 서버 주소가 설정되지 않았습니다.\n./db/index.ts 파일을 확인해 주세요.";
 
-connect(MONGO_URI)
+connect(MONGODB_URL)
   .then(() => console.log("MongoDB와 연결에 성공했습니다"))
   .catch((error) => console.error(error));
 

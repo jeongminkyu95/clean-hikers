@@ -1,6 +1,7 @@
 import { connect } from "mongoose";
 import { User } from "../user/userModel.js";
-import { Post, Comment } from "../community/communtiyModel.js";
+import { Post } from "../community/postModel.js";
+import { Comment } from "../community_comment/commentModel.js";
 import { Mountain } from "../mountain/mountainModel.js";
 
 // import { Mountain } from "../mountain/mountainModel.js";

@@ -1,0 +1,189 @@
+[
+  {
+    "image": null,
+    "_id": "634c87b53e8ee27064bd9ab8",
+    "id": "0",
+    "name": "가야산",
+    "trash": "23.192",
+    "latitude": "35.822119",
+    "longitude": "128.117935",
+    "address": "경상남도 합천군",
+    "difficulty": "중"
+  },
+  {
+    "image": null,
+    "_id": "634c87b53e8ee27064bd9ab9",
+    "id": "1",
+    "name": "계룡산",
+    "trash": "37.504",
+    "latitude": "36.342114",
+    "longitude": "127.205563",
+    "address": "충청남도 계룡시",
+    "difficulty": "중"
+  },
+  {
+    "image": null,
+    "_id": "634c87b53e8ee27064bd9aba",
+    "id": "2",
+    "name": "내장산",
+    "trash": "30.88",
+    "latitude": "35.480358",
+    "longitude": "126.887988",
+    "address": "전라북도 순창군",
+    "difficulty": "중"
+  },
+  {
+    "image": null,
+    "_id": "634c87b53e8ee27064bd9abb",
+    "id": "3",
+    "name": "덕유산",
+    "trash": "88.9",
+    "latitude": "35.86125",
+    "longitude": "127.746131",
+    "address": "경상남도 무주군",
+    "difficulty": "상"
+  },
+  {
+    "image": null,
+    "_id": "634c87b53e8ee27064bd9abc",
+    "id": "4",
+    "name": "무등산",
+    "trash": "16.144",
+    "latitude": "35.134364",
+    "longitude": "126.988595",
+    "address": "광주광역시",
+    "difficulty": "미분류"
+  },
+  {
+    "image": null,
+    "_id": "634c87b53e8ee27064bd9abd",
+    "id": "5",
+    "name": "북한산",
+    "trash": "53.106",
+    "latitude": "37.660934",
+    "longitude": "126.993332",
+    "address": "서울특별시",
+    "difficulty": "하"
+  },
+  {
+    "image": null,
+    "_id": "634c87b53e8ee27064bd9abe",
+    "id": "6",
+    "name": "설악산",
+    "trash": "50.422",
+    "latitude": "38.120389",
+    "longitude": "128.46576",
+    "address": "강원도 인제군",
+    "difficulty": "하"
+  },
+  {
+    "image": null,
+    "_id": "634c87b53e8ee27064bd9abf",
+    "id": "7",
+    "name": "소백산",
+    "trash": "13.444",
+    "latitude": "36.951772",
+    "longitude": "128.446059",
+    "address": "충청북도 단양군",
+    "difficulty": "중"
+  },
+  {
+    "image": null,
+    "_id": "634c87b53e8ee27064bd9ac0",
+    "id": "8",
+    "name": "속리산",
+    "trash": "26.43",
+    "latitude": "36.543261",
+    "longitude": "127.870851",
+    "address": "경상북도 상주시",
+    "difficulty": "상"
+  },
+  {
+    "image": null,
+    "_id": "634c87b53e8ee27064bd9ac1",
+    "id": "9",
+    "name": "오대산",
+    "trash": "70.08",
+    "latitude": "37.79879",
+    "longitude": "128.542903",
+    "address": "강원도 평창군",
+    "difficulty": "중"
+  },
+  {
+    "image": null,
+    "_id": "634c87b53e8ee27064bd9ac2",
+    "id": "10",
+    "name": "월악산",
+    "trash": "69.212",
+    "latitude": "36.889543",
+    "longitude": "128.090835",
+    "address": "충청북도 제천시",
+    "difficulty": "중"
+  },
+  {
+    "image": null,
+    "_id": "634c87b53e8ee27064bd9ac3",
+    "id": "11",
+    "name": "월출산",
+    "trash": "15.674",
+    "latitude": "34.774373",
+    "longitude": "126.710414",
+    "address": "전라남도 영암군",
+    "difficulty": "미분류"
+  },
+  {
+    "image": null,
+    "_id": "634c87b53e8ee27064bd9ac4",
+    "id": "12",
+    "name": "주왕산",
+    "trash": "26.394",
+    "latitude": "36.389695",
+    "longitude": "129.167458",
+    "address": "경상남도 청송군",
+    "difficulty": "중"
+  },
+  {
+    "image": null,
+    "_id": "634c87b53e8ee27064bd9ac5",
+    "id": "13",
+    "name": "지리산",
+    "trash": "24.86",
+    "latitude": "35.336728",
+    "longitude": "127.730959",
+    "address": "경상남도 산청군",
+    "difficulty": "하"
+  },
+  {
+    "image": null,
+    "_id": "634c87b53e8ee27064bd9ac6",
+    "id": "14",
+    "name": "치악산",
+    "trash": "25.954",
+    "latitude": "37.37178",
+    "longitude": "128.05049",
+    "address": "강원도 원주시",
+    "difficulty": "중"
+  },
+  {
+    "image": null,
+    "_id": "634c87b53e8ee27064bd9ac7",
+    "id": "15",
+    "name": "태백산",
+    "trash": "34.822",
+    "latitude": "37.095704",
+    "longitude": "128.915197",
+    "address": "강원도 태백시",
+    "difficulty": "하"
+  },
+  {
+    "image": null,
+    "_id": "634c87b53e8ee27064bd9ac8",
+    "id": "16",
+    "name": "한라산",
+    "trash": "39.08",
+    "latitude": "33.361827",
+    "longitude": "126.529123",
+    "address": "제주시",
+    "difficulty": "미분류"
+  }
+]

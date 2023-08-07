@@ -34,8 +34,12 @@ class User {
     const update = {
       nickname: changingData,
     };
-    const changedUser = await UserModel.findOneAndUpdate(filter, update);
-    console.log("Nickname changed : ", changedUser.nickname);
+    const option = { returnOriginal: false };
+    const changedUser = await UserModel.findOneAndUpdate(
+      filter,
+      update,
+      option
+    );
     return changedUser;
   }
 

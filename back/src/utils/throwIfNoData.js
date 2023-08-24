@@ -1,5 +1,5 @@
-export function throwIfNoData(data, err) {
+export function throwIfNoData(data, err, message) {
   if (!data) {
-    throw new err();
+    throw new err(message);
   }
 }

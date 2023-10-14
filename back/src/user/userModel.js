@@ -1,24 +1,18 @@
 import { UserModel } from "./userSchema.js";
 
 class User {
-  //추후 해당하는 기능 추가 예정
-
-  //1.계정 생성
+  // 유저 생성
   static async create({ newUser }) {
     return await UserModel.create(newUser);
   }
 
+  // 유저 조회 by email
   static async findByEmail({ email }) {
-    const findUser = await UserModel.find({ email: email });
-    for (var i = 0; i < findUser.length; i++) {
-      if (findUser[i].deleted == false) {
-        const result = findUser[i];
-        return result;
-      }
-    }
-    throw new Error("유저가 존재하지 않습니다.");
+    const findUser = await UserModel.findOne({ email: email });
+    return findUser;
   }
 
+  // 유저 조회 by id
   static async findByID(id) {
     const findUser = await UserModel.findOne({ id: id });
     if (!findUser) {
@@ -27,6 +21,7 @@ class User {
     return findUser;
   }
 
+  // 유저 조회 후 닉네임 변경
   static async findByIDandChangeNickname(userID, changingData) {
     const filter = {
       id: userID,
@@ -43,6 +38,7 @@ class User {
     return changedUser;
   }
 
+  // 유저 조회 후 비밀번호 변경
   static async findByIDandChangePassword(userID, changingData) {
     const filter = {
       id: userID,
@@ -56,6 +52,7 @@ class User {
     return changedUser;
   }
 
+  // 유저 조회 후 사진 변경
   static async findByIDandChangePhoto(userID, image) {
     const filter = {
       id: userID,
@@ -69,6 +66,7 @@ class User {
     return changedImage;
   }
 
+  // 유저 조회 후 삭제
   static async findByIDandDeleteUser(id) {
     const filter = {
       id: id,

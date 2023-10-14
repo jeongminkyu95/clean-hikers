@@ -1,106 +1,108 @@
-import { Router } from 'express'
-import { userService } from './userService.js'
-import { loginRequired } from '../middlewares/loginRequired.js'
+import { Router } from "express";
+import { userService } from "./userService.js";
+import { loginRequired } from "../middlewares/loginRequired.js";
 
-const userRouter = Router()
+const userRouter = Router();
 
+// 회원가입
+userRouter.post("/register", async (req, res, next) => {
+  try {
+    // 유저생성
+    const newUser = await userService.addUser(req.body);
+    res.status(201).json(newUser);
+  } catch (error) {
+    next(error);
+  }
+});
 
-userRouter.get('/', function (req,res,next){
-    res.send('this is userRouter')
-})
-
-userRouter.post('/register', async function (req,res,next){
-    try{console.log(req.body)
-    //email, nickname, password 값의 필요가 필요함
-    const newUser = await userService.addUser(req.body)
-
-    res.status(201).json(newUser)}
-    catch(error){
-        next(error)
+// 이메일 중복 확인
+userRouter.post("/email-check", async (req, res, next) => {
+  try {
+    // 이메일 조회
+    const emailExist = await userService.findUserByEmail(req.body.email);
+    if (!emailExist) {
+      res.status(201).json({ message: "사용할 수 있는 이메일입니다" });
+    } else {
+      res.status(200).json({ message: "중복 된 이메일입니다" });
     }
-})
+  } catch (error) {
+    next(error);
+  }
+});
 
-userRouter.post('/email-check', async function(req,res,next){
-    try{
-        const checkEmail = req.body.email
-        const isEmailExist = await userService.findByEmail(checkEmail)
-        if(isEmailExist){
-            res.status(201).json({"message" : "사용할 수 있는 이메일입니다"})
-        }
-        else{
-            res.status(200).json({"message" : "중복 된 이메일입니다"})
-        }
-    }
-    catch(error){
-        next(error)
-    }
-})
+// 로그인
+userRouter.post("/login", async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const login = await userService.login({ email, password });
+    res.status(201).json({ jwt: login });
+  } catch (error) {
+    next(error);
+  }
+});
 
-userRouter.post('/login', async function (req,res,next){
-    try{const email = req.body.email
-    const password = req.body.password
-    const login = await userService.login({email, password})
-    res.status(201).json({jwt : login})
-}catch(error){
-    next(error)
-}   
-})
+// 유저페이지
+userRouter.get("/user-page", loginRequired, async (req, res, next) => {
+  try {
+    // 유저 조회 by id
+    const user = await userService.findUserById(req.loginedUser.id);
+    res.status(201).json(user);
+  } catch (error) {
+    next(error);
+  }
+});
 
-userRouter.get('/user-page',loginRequired,async function (req,res,next){
-    try{
-        const id = req.loginedUser.id
-        const currentUser = await userService.findCurrentUserData(id)
-        res.status(201).json(currentUser)
-    }
-    catch(error){
-        next(error)
-    }
-})
+// 닉네임 변경
+userRouter.put("/nickname", loginRequired, async (req, res, next) => {
+  try {
+    // 유저 닉네임 변경
+    const currentUser = await userService.changeUserNickname(
+      req.loginedUser.id,
+      req.body.nickname
+    );
+    res.status(201).json(currentUser);
+  } catch (error) {
+    next(error);
+  }
+});
 
-userRouter.put('/nickname',loginRequired, async function(req,res,next){
-    try{
-        const id = req.loginedUser.id
-        const nickname = req.body.nickname
-        const currentUser = await  userService.changeUserNickname(id,nickname)
-        res.status(201).json(currentUser)
-    }catch(error){
-        next(error)
-    }
-})
+// 비밀번호 변경
+userRouter.put("/password", loginRequired, async (req, res, next) => {
+  try {
+    // 유저 비밀번호 변경
+    const currentUser = await userService.changeUserPassword(
+      req.loginedUser.id,
+      req.body.password
+    );
+    res.status(201).json(currentUser);
+  } catch (error) {
+    next(error);
+  }
+});
 
-userRouter.put('/password',loginRequired, async function(req,res,next){
-    try{
-        const id = req.loginedUser.id
-        const password = req.body.password
-        const currentUser = await  userService.changeUserPassword(id,password)
-        res.status(201).json(currentUser)
-    }catch(error){
-        next(error)
-    }
-})
+// 사진 변경
+userRouter.put("/picture", loginRequired, async (req, res, next) => {
+  try {
+    // 유저 사진 변경
+    const currentUser = await userService.changeUserImage(
+      req.loginedUser.id,
+      req.body.image
+    );
+    res.status(201).json(currentUser);
+  } catch (error) {
+    next(error);
+  }
+});
 
-userRouter.put('/picture',loginRequired,async function(req,res,next){
-    try{
-        const id = req.loginedUser.id
-        const image = req.body.image
-        const currentUser = await userService.changeUserImage(id,image)
-        res.status(201).json(currentUser)
-    }
-    catch(error){
-        next(error)
-    }
-})
+// 회원 탈퇴
+userRouter.delete("/", loginRequired, async (req, res, next) => {
+  try {
+    // 유저 삭제 by id
+    const currentUser = await userService.deleteUser(req.loginedUser.id);
 
-
-userRouter.delete('/', loginRequired, async function(req,res,next){
-    try{
-        const id = req.loginedUser.id
-        const currentUser = await userService.deleteThisUser(id)
-
-        res.status(201).json(currentUser)
-    }
-    catch(error){
-        next(error)
-    }
-})
-export  {userRouter} 
+    res.status(201).json(currentUser);
+  } catch (error) {
+    next(error);
+  }
+});
+export { userRouter };

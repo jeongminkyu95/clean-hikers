@@ -1,160 +1,171 @@
-import { User } from "../mongoDB/index.js"
-import bcrypt from 'bcrypt'
-import {v4 as uuidv4} from 'uuid'
-import jwt from 'jsonwebtoken'
+import { User } from "../mongoDB/index.js";
+import bcrypt from "bcrypt";
+import { v4 as uuidv4 } from "uuid";
+import jwt from "jsonwebtoken";
 
-class userService{
-    static async addUser({ email,nickname,password}){
-        const user = await User.findByEmail({email})
-        console.log(user)
-        if(user && user.deleted == false) {
-            throw new Error('이미 존재하는 id 입니다')
-        }
+class userService {
+  // 유저 추가
+  static async addUser({ email, nickname, password }) {
+    // 유저 조회 by email
+    const user = await User.findByEmail({ email });
 
-        const hashedPassword = await bcrypt.hash(password,10)
-
-        const id = uuidv4();
-
-
-        const newUser = {id, email, nickname, password :hashedPassword }
-
-        const createdNewUser = await User.create({newUser})
-        return createdNewUser
+    // 이미 존재하는 유저라면 throw 에러
+    if (user) {
+      throw new Error("이미 존재하는 id 입니다");
     }
 
+    // 비밀번호 해쉬화
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    static async login({email,password}){
-        try{const userEmail = await User.findByEmail({email})
-        console.log(userEmail)
-        console.log(!null)
-        if(!userEmail){
-            throw new Error('해당 유저는 존재하지 않습니다')
-        }
-        const correctPassword = userEmail.password
-        const isPasswordRight = await bcrypt.compare(password, correctPassword)
-        console.log(isPasswordRight)
-        if(!isPasswordRight){
-            throw new Error('비밀번호가 틀렸습니다')
-        }
-        //따로 선언을 안했는데 .env파일이 들어가는 이유
-        if(userEmail.deleted == true){
-            
-                throw new Error('탈퇴한 유저입니다')
-            
-        }
-        const secretKey = process.env.JWT_SECRET_KEY 
-        
-        const result = jwt.sign({
-            id : userEmail.id
-        },secretKey,{
-            expiresIn: '30m'
-        })
+    // id 생성
+    const id = uuidv4();
 
-        return result
+    const newUser = { id, email, nickname, password: hashedPassword };
+
+    const createdNewUser = await User.create({ newUser });
+    return createdNewUser;
+  }
+
+  // 로그인
+  static async login({ email, password }) {
+    try {
+      // 유저 조회 by email
+      const userEmail = await User.findByEmail({ email });
+
+      if (!userEmail) {
+        throw new Error("해당 유저는 존재하지 않습니다");
+      }
+
+      // DB에 저장되어있는 비밀번호
+      const correctPassword = userEmail.password;
+      // 입력 받은 비밀번호와 DB에 있는 비밀번호와 비교
+      const isPasswordRight = await bcrypt.compare(password, correctPassword);
+
+      if (!isPasswordRight) {
+        throw new Error("비밀번호가 틀렸습니다");
+      }
+
+      // 탈퇴한 유저라면 로그인 불가
+      if (userEmail.deleted == true) {
+        throw new Error("탈퇴한 유저입니다");
+      }
+
+      const secretKey = process.env.JWT_SECRET_KEY;
+
+      // 토큰발행
+      const token = jwt.sign(
+        {
+          id: userEmail.id,
+        },
+        secretKey,
+        {
+          expiresIn: "30m",
+        }
+      );
+
+      return token;
+    } catch (error) {
+      throw error;
     }
-        catch(error){
-            //error가 발생할 부분은 없는거 같지만 에러는 만약을 위해 하는 거니까 설치
-            //
-            throw error
-        }
-    }
+  }
 
-    static async findCurrentUserData(userID){
-        try{
-            const currentUser = await User.findByID(userID)
-            if(!currentUser){
-                throw new Error('해당 유저는 존재하지 않습니다2')
-            }
-            if (currentUser.deleted == true){
-                throw new Error('해당 유저는 탈퇴한 유저입니다.')
-            }
-            return currentUser
-        }catch(error){
-            throw error
-        }
+  // 유저 조회 by id
+  static async findUserById(userID) {
+    try {
+      // 유저 조회
+      const user = await User.findByID(userID);
+      if (!user) {
+        throw new Error("해당 유저는 존재하지 않습니다2");
+      }
+      if (user.deleted == true) {
+        throw new Error("해당 유저는 탈퇴한 유저입니다.");
+      }
+      return user;
+    } catch (error) {
+      throw error;
     }
+  }
 
-    static async findByEmail(userMail){
-        try{
-            const checkUser = await User.findByEmail({email:userMail})
-            if(!checkUser){
-                //null일 경우는 여기서 걸러버림
-                //null = 일치하는 유저가 없음
-                return true
-            }
-            else{
-                return false
-            }
-        }
-        catch(error){
-            throw error
-        }
+  // 유저 조회 by email
+  static async findUserByEmail(userMail) {
+    try {
+      // 유저 조회
+      const user = await User.findByEmail({ email: userMail });
+      return user;
+    } catch (error) {
+      throw error;
     }
+  }
 
-    static async changeUserNickname(userID, changeNickname){
-        try{
-            const currentUser = await User.findByIDandChangeNickname(userID, changeNickname)
-            if(!currentUser){
-                throw new Error('해당 유저는 존재하지 않습니다-nickname')
-            }
-            return currentUser
-        }
-        catch(error){
-            throw error
-        }
+  // 유저 닉네임 변경
+  static async changeUserNickname(userID, changeNickname) {
+    try {
+      // 유저 닉네임 변경
+      const currentUser = await User.findByIDandChangeNickname(
+        userID,
+        changeNickname
+      );
+      if (!currentUser) {
+        throw new Error("해당 유저는 존재하지 않습니다-nickname");
+      }
+      return currentUser;
+    } catch (error) {
+      throw error;
     }
+  }
 
-    static async changeUserPassword(userID, changePassword){
-        try{
-            const encryptPassword = await bcrypt.hash(changePassword, 10)
-            const currentUser = await User.findByIDandChangePassword(userID, encryptPassword)
-            if(!currentUser){
-                throw new Error('해당 유저는 존재하지 않습니다-password')
-            }
-            return currentUser
-        }
-        catch(error){
-            throw error
-        }
+  // 유저 비밀번호 변경
+  static async changeUserPassword(userID, changePassword) {
+    try {
+      // 입력받은 비밀번호 해쉬화
+      const encryptPassword = await bcrypt.hash(changePassword, 10);
+      const currentUser = await User.findByIDandChangePassword(
+        userID,
+        encryptPassword
+      );
+      if (!currentUser) {
+        throw new Error("해당 유저는 존재하지 않습니다-password");
+      }
+      return currentUser;
+    } catch (error) {
+      throw error;
     }
+  }
 
-
-    static async changeUserImage(userID, imageString){
-        try{
-            const createImage = await User.findByIDandChangePhoto(userID, imageString)
-            if(!createImage){
-                throw new Error('해당 유저는 존재하지 않습니다')
-            }
-            return createImage
-        }
-        catch(error){
-            throw error
-        }
+  // 유저 사진 변경
+  static async changeUserImage(userID, imageString) {
+    try {
+      const createImage = await User.findByIDandChangePhoto(
+        userID,
+        imageString
+      );
+      if (!createImage) {
+        throw new Error("해당 유저는 존재하지 않습니다");
+      }
+      return createImage;
+    } catch (error) {
+      throw error;
     }
+  }
 
-    static async deleteThisUser(id){
-        try{
-            const checkAlreadyDeleted = await User.findByID(id)
-            if (checkAlreadyDeleted.deleted == true){
-                return {
-                    "message" : "이미 탈퇴한 유저입니다"
-                }
-            }
-            else{
-            const  deleteUser = await User.findByIDandDeleteUser(id)
-            if(!deleteUser){
-                throw new Error('해당 유저는 존재하지 않습니다')
-            }
-            
-            const result = {}
-            result["data"] = deleteUser
-            result["message"] = "해당 유저의 삭제가 완료되었습니다"
-            return result}
-        }
-        catch(error){
-            throw error
-        }
+  // 유저 삭제
+  static async deleteUser(id) {
+    try {
+      // 유저 삭제
+      const deleteUser = await User.findByIDandDeleteUser(id);
+      if (!deleteUser) {
+        throw new Error("해당 유저는 존재하지 않습니다");
+      }
+
+      const result = {
+        data: deleteUser,
+        message: "해당 유저의 삭제가 완료되었습니다.",
+      };
+      return result;
+    } catch (error) {
+      throw error;
     }
+  }
 }
 
-export  {userService}
+export { userService };

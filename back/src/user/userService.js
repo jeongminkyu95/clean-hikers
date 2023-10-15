@@ -90,7 +90,18 @@ class userService {
   static async findUserByEmail(userMail) {
     try {
       // 유저 조회
-      const user = await User.findByEmail({ email: userMail });
+      const user = await User.findByEmail(userMail);
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // 유저 조회 by nick
+  static async findUserBynick(nick) {
+    try {
+      // 유저 조회
+      const user = await User.findBynick(nick);
       return user;
     } catch (error) {
       throw error;

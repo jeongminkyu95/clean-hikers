@@ -7,8 +7,8 @@ class User {
   }
 
   // 유저 조회 by email
-  static async findByEmail({ email }) {
-    const findUser = await UserModel.findOne({ email: email });
+  static async findByEmail(userMail) {
+    const findUser = await UserModel.findOne({ email: userMail });
     return findUser;
   }
 
@@ -18,6 +18,12 @@ class User {
     if (!findUser) {
       throw new Error("유저가 존재하지 않습니다.");
     }
+    return findUser;
+  }
+
+  // 유저 조회 by nick
+  static async findBynick(nick) {
+    const findUser = await UserModel.findOne({ nickname: nick });
     return findUser;
   }
 

@@ -6,12 +6,19 @@ import {
   validateEmailCheck,
   validatePassword,
   validateNickName,
+  validateNickCheck,
 } from "../../util/formValidation";
 import { HttpStatusCode } from "../../enum/httpStautsCode";
 import { successMessage, errorMessage } from "../common/message/Message";
 import * as api from "../../api/api";
 
-import { PageBlock, FormBlock, TitleBlock, EmailBlock } from "./FormStyle";
+import {
+  PageBlock,
+  FormBlock,
+  TitleBlock,
+  EmailBlock,
+  NickBlock,
+} from "./FormStyle";
 import { InputBlock, ButtonBlock } from "../common/form/FormStyled";
 
 import { Form } from "antd";
@@ -26,6 +33,7 @@ function Register() {
     checkPassword: "",
   });
   const [emailCheck, setEmailCheck] = useState(false);
+  const [nickCheck, setNickCheck] = useState(false);
   const [form] = Form.useForm();
 
   function onChange(e) {
@@ -37,7 +45,7 @@ function Register() {
   }
 
   async function onFinish() {
-    if (emailCheck) {
+    if (emailCheck && nickCheck) {
       try {
         const res = await api.post("user/register", {
           ...formValue,
@@ -47,13 +55,17 @@ function Register() {
       } catch (e) {
         console.error(e);
         setEmailCheck(false);
+        setNickCheck(false);
       }
-    } else {
+    } else if (!emailCheck) {
       errorMessage("이메일 중복확인을 해주세요");
+    } else if (!nickCheck) {
+      errorMessage("닉네임 중복확인을 해주세요.");
     }
   }
 
   const isEmailValid = validateEmailCheck(formValue.email);
+  const isNickValid = validateNickCheck(formValue.nickname);
 
   async function onEmailCheck() {
     try {
@@ -67,6 +79,27 @@ function Register() {
       if (status === HttpStatusCode.Created) {
         successMessage(message);
         setEmailCheck(true);
+      }
+      if (status === HttpStatusCode.Ok) {
+        errorMessage(message);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async function onNickCheck() {
+    try {
+      const {
+        status,
+        data: { message },
+      } = await api.post("user/nick-check", {
+        nickname: formValue.nickname,
+      });
+
+      if (status === HttpStatusCode.Created) {
+        successMessage(message);
+        setNickCheck(true);
       }
       if (status === HttpStatusCode.Ok) {
         errorMessage(message);
@@ -102,15 +135,26 @@ function Register() {
             중복확인
           </ButtonBlock>
         </EmailBlock>
-        <Form.Item name="nickname" rules={[{ validator: validateNickName }]}>
-          <InputBlock
-            prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Nickname"
-            name="nickname"
-            value={formValue.nickname}
-            onChange={onChange}
-          />
-        </Form.Item>
+        <NickBlock>
+          <Form.Item name="nickname" rules={[{ validator: validateNickName }]}>
+            <InputBlock
+              prefix={<UserOutlined className="site-form-item-icon" />}
+              placeholder="Nickname"
+              name="nickname"
+              value={formValue.nickname}
+              onChange={onChange}
+              className="registerNick"
+            />
+          </Form.Item>
+          <ButtonBlock
+            type="button"
+            onClick={onNickCheck}
+            disabled={!isNickValid}
+          >
+            중복확인
+          </ButtonBlock>
+        </NickBlock>
+
         <Form.Item name="password" rules={[{ validator: validatePassword }]}>
           <InputBlock
             prefix={<LockOutlined className="site-form-item-icon" />}

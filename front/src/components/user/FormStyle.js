@@ -101,3 +101,31 @@ export const EmailBlock = styled.div`
     cursor: pointer;
   }
 `;
+
+export const NickBlock = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 60%;
+  margin: 0 auto;
+
+  .ant-form-item {
+    width: 70%;
+    .registerNick {
+      width: 100%;
+    }
+  }
+
+  .ant-form-item-explain-error {
+    width: 100%;
+  }
+
+  button {
+    width: 25%;
+    height: 50px;
+    margin: 1rem 0 0 0;
+    box-sizing: inherit;
+    background: transparent;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+`;

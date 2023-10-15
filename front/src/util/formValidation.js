@@ -34,6 +34,14 @@ export function validateNickName(_, value) {
   return Promise.resolve();
 }
 
+export function validateNickCheck(nickname) {
+  if (!nickname || /\s/.test(nickname)) {
+    return false;
+  }
+  const regExp = /^[A-Za-z0-9]{2,}$/;
+  return regExp.test(nickname);
+}
+
 export function validatePassword(_, value) {
   if (!value) {
     return Promise.reject(new Error("비밀번호를 입력해 주세요."));

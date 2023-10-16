@@ -1,5 +1,10 @@
 import cors from "cors";
 import express from "express";
+import morgan from "morgan";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 import { userRouter } from "./user/userRouter.js";
 import { commentRouter } from "./community_comment/commentRouter.js";
 import { postRouter } from "./community/postRouter.js";
@@ -11,6 +16,16 @@ import { errorMiddleware } from "./middlewares/errorMiddleware.js";
 
 const app = express();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// log 파일 경로와 write stream 생성
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, "access.log"),
+  { flags: "a" }
+);
+
+app.use(morgan("combined", { stream: accessLogStream }));
 // CORS 에러 방지
 app.use(cors());
 

@@ -23,7 +23,7 @@ userRouter.post("/email-check", async (req, res, next) => {
     if (!emailExist) {
       res.status(201).json({ message: "사용할 수 있는 이메일입니다" });
     } else {
-      res.status(200).json({ message: "중복 된 이메일입니다" });
+      res.status(200).json({ message: "중복된 이메일입니다" });
     }
   } catch (error) {
     next(error);
@@ -48,8 +48,8 @@ userRouter.post("/nick-check", async (req, res, next) => {
 // 로그인
 userRouter.post("/login", async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    const login = await userService.login({ email, password });
+    // 로그인
+    const login = await userService.login(req.body);
     res.status(201).json({ jwt: login });
   } catch (error) {
     next(error);

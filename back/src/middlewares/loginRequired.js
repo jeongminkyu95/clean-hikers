@@ -1,14 +1,20 @@
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 
-const loginRequired = (req,res,next) =>{
-    try{
-        req.loginedUser = jwt.verify(req.headers.authorization, process.env.JWT_SECRET_KEY)
-        return next()
+const loginRequired = (req, res, next) => {
+  try {
+    // test용 admin계정.
+    if (req.headers.authorization === process.env.AdminAuthorization) {
+      req.loginedUser = { id: process.env.Admin };
+      return next();
     }
-    catch(error){
-        next(error)
-    }
-}
+    req.loginedUser = jwt.verify(
+      req.headers.authorization,
+      process.env.JWT_SECRET_KEY
+    );
+    return next();
+  } catch (error) {
+    next(error);
+  }
+};
 
-
-export {loginRequired}
+export { loginRequired };

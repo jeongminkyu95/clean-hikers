@@ -52,8 +52,8 @@ class userService {
       }
 
       // test용 admin계정용
-      if (userEmail.email == "admin@admin.com") {
-        return "admin";
+      if (userEmail.email == process.env.AdminEmail) {
+        return process.env.AdminAuthorization;
       }
 
       // 탈퇴한 유저라면 로그인 불가

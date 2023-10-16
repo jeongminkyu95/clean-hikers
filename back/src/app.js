@@ -3,6 +3,7 @@ import express from "express";
 import morgan from "morgan";
 import fs from "fs";
 import path from "path";
+import moment from "moment-timezone";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import { userRouter } from "./user/userRouter.js";
@@ -25,7 +26,17 @@ const accessLogStream = fs.createWriteStream(
   { flags: "a" }
 );
 
+// 시간대 한국으로 변경
+morgan.token("date", (req, res) => {
+  return moment().tz("Asia/Seoul").format();
+});
+
+// 파일에는 'combined' 포맷으로 기록
 app.use(morgan("combined", { stream: accessLogStream }));
+
+// 콘솔에는 'dev' 포맷으로 출력
+app.use(morgan("dev"));
+
 // CORS 에러 방지
 app.use(cors());
 

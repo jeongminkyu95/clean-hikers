@@ -7,11 +7,16 @@ class userService {
   // 유저 추가
   static async addUser({ email, nickname, password }) {
     // 유저 조회 by email
-    const user = await User.findByEmail({ email });
-
+    const user = await User.findByEmail(email);
     // 이미 존재하는 유저라면 throw 에러
     if (user) {
-      throw new Error("이미 존재하는 id 입니다");
+      throw new Error("이미 존재하는 이메일 입니다");
+    }
+
+    // 이미 존재하는 닉네임이라면 throw 에러
+    const nickExist = await User.findBynick(nickname);
+    if (nickExist) {
+      throw new Error("이미 존재하는 닉네임 입니다.");
     }
 
     // 비밀번호 해쉬화
@@ -22,6 +27,7 @@ class userService {
 
     const newUser = { id, email, nickname, password: hashedPassword };
 
+    // 유저 생성
     const createdNewUser = await User.create({ newUser });
     return createdNewUser;
   }
@@ -30,7 +36,7 @@ class userService {
   static async login({ email, password }) {
     try {
       // 유저 조회 by email
-      const userEmail = await User.findByEmail({ email });
+      const userEmail = await User.findByEmail(email);
 
       if (!userEmail) {
         throw new Error("해당 유저는 존재하지 않습니다");
@@ -43,6 +49,11 @@ class userService {
 
       if (!isPasswordRight) {
         throw new Error("비밀번호가 틀렸습니다");
+      }
+
+      // test용 admin계정용
+      if (userEmail.email == "admin@admin.com") {
+        return "admin";
       }
 
       // 탈퇴한 유저라면 로그인 불가
@@ -72,10 +83,10 @@ class userService {
   // 유저 조회 by id
   static async findUserById(userID) {
     try {
-      // 유저 조회
+      // 유저 조회 by id
       const user = await User.findByID(userID);
       if (!user) {
-        throw new Error("해당 유저는 존재하지 않습니다2");
+        throw new Error("해당 유저는 존재하지 않습니다.");
       }
       if (user.deleted == true) {
         throw new Error("해당 유저는 탈퇴한 유저입니다.");
@@ -89,7 +100,7 @@ class userService {
   // 유저 조회 by email
   static async findUserByEmail(userMail) {
     try {
-      // 유저 조회
+      // 유저 조회 by email
       const user = await User.findByEmail(userMail);
       return user;
     } catch (error) {
@@ -100,7 +111,7 @@ class userService {
   // 유저 조회 by nick
   static async findUserBynick(nick) {
     try {
-      // 유저 조회
+      // 유저 조회 by nick
       const user = await User.findBynick(nick);
       return user;
     } catch (error) {
@@ -109,12 +120,17 @@ class userService {
   }
 
   // 유저 닉네임 변경
-  static async changeUserNickname(userID, changeNickname) {
+  static async changeUserNickname(userID, newNickname) {
     try {
+      const nickExist = await User.findBynick(newNickname);
+      if (nickExist) {
+        throw new Error("이미 존재하는 닉네임입니다.");
+      }
+
       // 유저 닉네임 변경
       const currentUser = await User.findByIDandChangeNickname(
         userID,
-        changeNickname
+        newNickname
       );
       if (!currentUser) {
         throw new Error("해당 유저는 존재하지 않습니다-nickname");
@@ -126,10 +142,10 @@ class userService {
   }
 
   // 유저 비밀번호 변경
-  static async changeUserPassword(userID, changePassword) {
+  static async changeUserPassword(userID, newPassword) {
     try {
       // 입력받은 비밀번호 해쉬화
-      const encryptPassword = await bcrypt.hash(changePassword, 10);
+      const encryptPassword = await bcrypt.hash(newPassword, 10);
       const currentUser = await User.findByIDandChangePassword(
         userID,
         encryptPassword

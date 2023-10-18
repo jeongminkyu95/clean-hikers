@@ -18,7 +18,7 @@ function UserPostList({ user, activeTabKey }) {
             "community/posts",
             `${id}?page=${page}&perPage=5`
           );
-          setUserPost(data.allPostsList);
+          setUserPost(data.paginatedPosts);
           setTotal(data.totalPage);
         } catch (e) {
           console.error(e);

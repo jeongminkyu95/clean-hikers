@@ -1,13 +1,11 @@
 import { Pagination } from "antd";
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { RecruitBlueBtn } from "../../common/button/IconBtn";
-import BottomNavigation from "../../common/navigation/BottomNavigation";
 
 import {
   CommunityListCol,
-  CommunityListRow,
   RecruitBlueBtnAlign,
 } from "../styledComponents/CommunityListStyled";
 
@@ -29,10 +27,11 @@ const PaginationWrapper = styled(Pagination)`
 `;
 function CommunityList({
   posts,
-  setPosts,
   currentUserData,
   setPageNum,
   pageNum,
+  setStation,
+  totalPage,
 }) {
   return (
     <div>
@@ -44,16 +43,20 @@ function CommunityList({
             </Link>
           </RecruitBlueBtnAlign>
         )}
-        <CommunityNav posts={posts} setPosts={setPosts} pageNum={pageNum} />
+        <CommunityNav
+          posts={posts}
+          setPageNum={setPageNum}
+          onChange={(e) => setStation(e)}
+        />
         <PaginationWrapper
+          current={pageNum}
           defaultCurrent={1}
-          total={18}
+          total={totalPage * 5}
           defaultPageSize={5}
           size="small"
           showSizeChanger={false}
           onChange={(e) => setPageNum(e)}
         />
-        {console.log(pageNum)}
       </CommunityListCol>
     </div>
   );

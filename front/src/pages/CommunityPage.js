@@ -5,13 +5,14 @@ function CommunityPage() {
   const [posts, setPosts] = useState([]);
   const [currentUserData, setCurrentUserData] = useState("");
   const [pageNum, setPageNum] = useState(1);
+  const [station, setStation] = useState("allPosts");
+  const [totalPage, setToTalPage] = useState(0);
 
   useEffect(() => {
     async function getUserData() {
       try {
         const { data: currentUser } = await api.get("user/user-page");
         setCurrentUserData(currentUser);
-        console.log("현재유저 : ", currentUserData.nickname);
       } catch (e) {
         console.error(e);
       }
@@ -22,15 +23,20 @@ function CommunityPage() {
   useEffect(() => {
     async function getCommunityData() {
       try {
-        await api
-          .get(`community/postlist`, `?page=${pageNum}&perPage=${5}`)
-          .then((res) => (setPosts(res.data), console.log(res)));
+        const res = await api.get(
+          `community/postlist`,
+          `?station=${station}&page=${pageNum}&perPage=${5}`
+        );
+
+        setPosts(res.data.paginatedPosts);
+        setToTalPage(res.data.totalPage);
       } catch (e) {
         console.log(e);
       }
     }
+    setPosts([]);
     getCommunityData();
-  }, [pageNum]);
+  }, [station, pageNum]);
 
   return (
     <>
@@ -39,6 +45,9 @@ function CommunityPage() {
         setPosts={setPosts}
         setPageNum={setPageNum}
         pageNum={pageNum}
+        station={station}
+        totalPage={totalPage}
+        setStation={setStation}
         currentUserData={currentUserData}
       />
     </>

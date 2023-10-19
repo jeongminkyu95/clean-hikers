@@ -90,10 +90,10 @@ postRouter.put("/posts/:postId", async function (req, res, next) {
 });
 
 //유저 닉네임 수정시 게시글 작성자 닉네임 수정
-postRouter.put("/users/:id", async function (req, res, next) {
+postRouter.put("/posts/byUser/:userId", async function (req, res, next) {
   try {
-    const user_id = req.params.id;
-    const toUpdate = req.query;
+    const user_id = req.params.userId;
+    const toUpdate = req.body;
 
     // 사용자의 닉네임 변경 후 그에 따라 해당 사용자가 작성한 모든 게시물의 닉네임도 업데이트함.
     await postService.changeNicknamePost({

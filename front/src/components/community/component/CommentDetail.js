@@ -1,8 +1,7 @@
 import { Avatar, Button, List } from "antd";
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import * as api from "../../../api/api";
 import { UserOutlined } from "@ant-design/icons";
+import moment from "moment";
 function CommentDetail({ comments, handleDelete, currentUserId }) {
   return (
     <List
@@ -11,7 +10,6 @@ function CommentDetail({ comments, handleDelete, currentUserId }) {
       itemLayout="horizontal"
       renderItem={(item) => (
         <>
-          {console.log("item test", item)}
           <List.Item
             extra={
               item.user_id === currentUserId && (
@@ -24,6 +22,9 @@ function CommentDetail({ comments, handleDelete, currentUserId }) {
               title={item.nickname}
               description={item.description}
             />
+            <div style={{ margin: "0 10px" }}>
+              {moment(item.createdAt).fromNow()}
+            </div>
           </List.Item>
         </>
       )}

@@ -60,13 +60,8 @@ function CommunityEdit() {
   const onFinish = async (value) => {
     await api
       .put(`community/posts/${datas.post_id}`, {
-        user_id: datas.user_id,
         title: value.title,
-        location: value.location.name,
         description: value.description,
-        date: value.visitDate,
-        nickname: datas.nickname,
-        header: "mink",
       })
       .then(function (response) {
         console.log(response);

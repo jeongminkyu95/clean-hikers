@@ -42,15 +42,11 @@ function CommentList({ currentUserData, datas }) {
       let res = await api.post(`community/posts/comment`, {
         user_id: currentUserData.id,
         post_id: datas.post_id,
-        title: "3333",
         description: value,
         nickname: currentUserData.nickname,
       });
-      console.log(res);
-      // res = await api.get(``)
 
-      newComments.unshift(res.data);
-      console.log(newComments);
+      newComments.push(res.data);
       setValue("");
       setComments([
         ...comments,
@@ -58,7 +54,6 @@ function CommentList({ currentUserData, datas }) {
           author: currentUserData.nickname,
           avatar: currentUserData.defaultImage,
           content: <p>{value}</p>,
-          datetime: moment(comments.createdAt).fromNow(),
         },
       ]);
       setComments(newComments);
@@ -83,7 +78,6 @@ function CommentList({ currentUserData, datas }) {
           currentUserId={currentUserId}
         />
       )}
-      {console.log("test", currentUserData)}
       {currentUserData.id && (
         <CommunityCommentList
           avatar={

@@ -1,77 +1,60 @@
-import is from "@sindresorhus/is";
 import { Router } from "express";
-import { commentService } from "../community/communityService.js";
-import { ErrorMessage } from "../middlewares/errorMiddleware.js";
+import { commentService } from "./commentService.js";
 
 const commentRouter = Router();
 
 // 댓글 추가
 commentRouter.post("/posts/comment", async function (req, res, next) {
-    try {
-        if (is.emptyObject(req.body)) {
-            throw new Error(
-                "headers의 Content-Type을 application/json으로 설정해주세요"
-            );
-        }
+  try {
+    const newComment = await commentService.addComment(req.body);
 
-        const newComment = await commentService.addComment(req.body);
-
-        ErrorMessage(newComment);
-        res.status(201).json(newComment);
-    } catch (error) {
-        next(error);
-    }
+    res.status(201).json(newComment);
+  } catch (error) {
+    next(error);
+  }
 });
 
-//댓글 조회
+// 해당 게시글의 댓글 조회
 commentRouter.get("/posts/comments/:postId", async function (req, res, next) {
-    try {
-        const post_id = req.params.postId;
-        const comments = await commentService.getComments({ post_id });
-
-        ErrorMessage(comments);
-        res.status(200).send(comments);
-    } catch (error) {
-        next(error);
-    }
+  try {
+    const comments = await commentService.getComments(req.params.postId);
+    res.status(200).send(comments);
+  } catch (error) {
+    next(error);
+  }
 });
 
-//댓글 수정
+// 유저 닉네임 변경시 해당 유저의 댓글들 일괄 수정
 commentRouter.put(
-    "/posts/comments/:commentId",
-    async function (req, res, next) {
-        try {
-            const comment_id = req.params.commentId;
+  "/posts/comment/byUser/:userId",
+  async function (req, res, next) {
+    try {
+      const user_id = req.params.userId;
+      const toUpdate = req.body;
 
-            const toUpdate = req.body;
+      await commentService.setCommentNick({
+        user_id,
+        toUpdate,
+      });
 
-            const updatedComment = await commentService.setComment({
-                comment_id,
-                toUpdate,
-            });
-
-            ErrorMessage(updatedComment);
-            res.status(200).json(updatedComment);
-        } catch (error) {
-            next(error);
-        }
+      res.status(204);
+    } catch (error) {
+      next(error);
     }
+  }
 );
 
 // 댓글 삭제
 commentRouter.delete(
-    "/posts/comments/:commentId",
-    async function (req, res, next) {
-        try {
-            const comment_id = req.params.commentId;
-            const comments = await commentService.deleteComment({ comment_id });
-
-            ErrorMessage(comments);
-            res.send("삭제가 완료되었습니다.");
-        } catch (error) {
-            next(error);
-        }
+  "/posts/comments/:commentId",
+  async function (req, res, next) {
+    try {
+      await commentService.deleteComment(req.params.commentId);
+      res.status(204);
+    } catch (error) {
+      next(error);
     }
+  }
 );
 
 export { commentRouter };

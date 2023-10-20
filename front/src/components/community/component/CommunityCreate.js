@@ -31,7 +31,7 @@ function CommunityCreate() {
     visitDate: null,
     location: null,
     state: "모집중",
-    personnel: null,
+    participantsLimit: null,
     description: null,
   };
 
@@ -76,7 +76,7 @@ function CommunityCreate() {
         nickname: nickname,
         station: value.state,
         location: value.location,
-        personnel: value.personnel,
+        participantsLimit: value.participantsLimit,
       })
       .then(function (response) {
         console.log(response);
@@ -164,7 +164,7 @@ function CommunityCreate() {
               </Col>
               <Col span={6}>
                 <FormItem
-                  name="personnel"
+                  name="participantsLimit"
                   rules={[{ required: true, message: "제목을 입력하세요" }]}
                 >
                   <Select>

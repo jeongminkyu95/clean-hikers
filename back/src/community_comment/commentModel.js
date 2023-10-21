@@ -22,6 +22,13 @@ class Comment {
       comment_id: comment_id,
     });
   }
+
+  // 댓글 일괄 삭제
+  static async deleteAllCommentsByPostId(post_id) {
+    return await CommentModel.deleteMany({
+      post_id: post_id,
+    });
+  }
 }
 
 export { Comment };

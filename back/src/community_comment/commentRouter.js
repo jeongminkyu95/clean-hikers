@@ -26,7 +26,7 @@ commentRouter.get("/posts/comments/:postId", async function (req, res, next) {
 
 // 유저 닉네임 변경시 해당 유저의 댓글들 일괄 수정
 commentRouter.put(
-  "/posts/comment/byUser/:userId",
+  "/posts/comments/byUser/:userId",
   async function (req, res, next) {
     try {
       const user_id = req.params.userId;
@@ -56,5 +56,15 @@ commentRouter.delete(
     }
   }
 );
+
+// 게시글 삭제하면서 해당 게시글의 댓글 일괄 삭제
+commentRouter.delete("/:postId/comments", async function (req, res, next) {
+  try {
+    await commentService.deleteAllComments(req.params.postId);
+    res.status(204);
+  } catch (error) {
+    next(error);
+  }
+});
 
 export { commentRouter };

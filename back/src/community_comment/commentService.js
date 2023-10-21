@@ -1,6 +1,5 @@
 import { v4 } from "uuid";
 import { Comment } from "../mongoDB/index.js";
-import { postService } from "../community/postService.js";
 
 class commentService {
   // 댓글 생성
@@ -33,6 +32,11 @@ class commentService {
   // 댓글 삭제
   static async deleteComment(comment_id) {
     return await Comment.deleteByCommentId(comment_id);
+  }
+
+  // 댓글 일괄 삭제
+  static async deleteAllComments(post_id) {
+    return await Comment.deleteAllCommentsByPostId(post_id);
   }
 }
 

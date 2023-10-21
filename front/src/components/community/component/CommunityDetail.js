@@ -1,13 +1,11 @@
 import "moment/locale/ko";
-import React, { useEffect, useRef, useState, useContext } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   ButtonRow,
-  CommunityDetailAlign,
   CreateRow,
   DetailCol,
 } from "../styledComponents/CommunityDetailStyled";
-import { UserStateContext, DispatchContext } from "../../../App";
 
 import { EnvironmentOutlined } from "@ant-design/icons";
 import { UserOutlined } from "@ant-design/icons";
@@ -28,10 +26,6 @@ function CommunityDetail({}) {
   const [currentUserData, setCurrentUserData] = useState("");
   const [textState, setTextState] = useState("참여신청");
 
-  const userState = useContext(UserStateContext);
-  const dispatch = useContext(DispatchContext);
-  const isLogin = !!userState.user;
-
   const { no } = useParams();
 
   const [style, setStyle] = useState({
@@ -42,25 +36,61 @@ function CommunityDetail({}) {
 
   const [latitude, setLatitude] = useState(35.86125);
   const [longitude, setLongitude] = useState(127.746131);
-  const [personnel, setPersonnel] = useState(0);
 
   const cardDecription = () => {
     let visitDate = moment(datas.visitDate);
     visitDate = visitDate.format("YYYY년 MM월 DD일");
 
-    return datas.station == "클린후기" ? (
+    return datas.station === "클린후기" ? (
       <p>
         {visitDate} <br />
-        {datas.personnel}명과 함께했어요!
+        {datas.participantsLimit}명과 함께했어요!
       </p>
     ) : (
       <p>
         {visitDate} <br />
-        모집인원 : {datas.personnel} <br />
-        신청인원 : {personnel}
+        모집인원 : {datas.participantsLimit} <br />
+        신청인원 : {datas.participants?.length || 0}
       </p>
     );
   };
+
+  const getCommunityDetaildata = useCallback(async () => {
+    try {
+      const res = await api.get(`community/postsDetail/${no}`);
+      setDatas(res.data);
+      setLocation(res.data.location);
+
+      // 참가자 배열에 현재 유저가 담겨있는지 체크
+      const isParticipant = res.data.participants.some(
+        (participant) => participant.id === currentUserData.id
+      );
+
+      // 참여 버튼 상태 설정
+      const buttonStation = () => {
+        if (
+          res.data.station === "클린후기" ||
+          res.data.user_id === currentUserData.id
+        ) {
+          // 클린후기 - 버튼 x
+          // 게시글 작성자 본인인 경우 - 버튼 x
+          return "non";
+        } else if (res.data.station === "모집완료") {
+          // 모집 완료인데 참가자인가 - 참여취소
+          // 모집 완료인데 참가자가 아닌가 - 모집완료
+          return isParticipant ? "참여취소" : "모집완료";
+        } else {
+          // 모집 중인데 참가자인가 - 참여 취소
+          // 모집 중인데 참가자가 아닌가 - 참여신청
+          return isParticipant ? "참여취소" : "참여신청";
+        }
+      };
+
+      setTextState(buttonStation);
+    } catch (res) {
+      console.log(res);
+    }
+  }, [no, currentUserData.id]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -72,7 +102,6 @@ function CommunityDetail({}) {
       try {
         const { data: currentUser } = await api.get("user/user-page");
         setCurrentUserData(currentUser);
-        console.log("현재유저 : ", currentUserData.nickname);
       } catch (e) {
         console.error(e);
       }
@@ -80,6 +109,7 @@ function CommunityDetail({}) {
     getUserData();
   }, []);
 
+  // 게시글 삭제하기
   const handleDelete = async function () {
     if (window.confirm("해당 게시물을 삭제하시겠습니까?")) {
       await api.delete(`community/posts/${no}`);
@@ -91,20 +121,14 @@ function CommunityDetail({}) {
   //게시글(모임)에 참석하기
   const handleApply = async function () {
     if (window.confirm(`${textState} 하시겠습니까?`)) {
-      console.log("현재유저데이터 : ", currentUserData);
       try {
-        await api
-          .post(`community/posts/${no}/user`, {
-            post_id: no,
-            email: currentUserData.email,
-          })
-          .then(
-            (res) => (
-              setPersonnel(res.data.count),
-              console.log("전달받은 데이터 : ", res.data.count)
-            )
-          );
+        await api.post(`community/posts/${no}/participants`, {
+          post_id: no,
+          email: currentUserData.email,
+        });
+
         alert(`${textState} 완료되었습니다.`);
+        getCommunityDetaildata();
       } catch (e) {
         console.log(e);
       }
@@ -114,38 +138,23 @@ function CommunityDetail({}) {
   const postTime = moment(datas.createdAt).fromNow(); // post 작성 시간
 
   useEffect(() => {
-    async function getCommunityDetaildata() {
-      try {
-        await api
-          .get(`community/postsDetail/${no}`)
-          .then((res) => (setDatas(res.data), setLocation(res.data.location)));
-      } catch (res) {
-        console.log(res);
-      }
-    }
     getCommunityDetaildata();
-  }, [no]);
+  }, [getCommunityDetaildata]);
 
   useEffect(() => {
     setLatitude(location.latitude);
     setLongitude(location.longitude);
   }, [location]);
 
-  //인원수 불러오기
   useEffect(() => {
-    async function getPersonnelData() {
-      try {
-        await api
-          .get(`community/posts/${no}/people`)
-          .then(
-            (res) => (setPersonnel(res.data.length), console.log("확인", res.data.length))
-          );
-      } catch (e) {
-        console.error("error", e);
-      }
+    if (location.latitude && location.longitude) {
+      setLatitude(location.latitude);
+      setLongitude(location.longitude);
+
+      const map = mapRef.current;
+      if (map) map.relayout();
     }
-    getPersonnelData();
-  }, [no]);
+  }, [location]);
 
   return (
     <>
@@ -165,7 +174,6 @@ function CommunityDetail({}) {
               </Link>
             </Col>
           )}
-          {console.log(datas)}
           <Row>
             <Col span={10}>
               <div className="community-detail-main">
@@ -178,7 +186,9 @@ function CommunityDetail({}) {
                 <p>
                   {<EnvironmentOutlined />} {location.name} | {location.address}
                 </p>
-                <p className="community-detail-discription">{datas.description}</p>
+                <p className="community-detail-discription">
+                  {datas.description}
+                </p>
               </div>
             </Col>
             <Col span={14} push={2}>
@@ -189,7 +199,25 @@ function CommunityDetail({}) {
                   }}
                   cover={
                     <>
-                      <Map
+                      {latitude && longitude && (
+                        <Map
+                          center={{
+                            lat: latitude,
+                            lng: longitude,
+                          }}
+                          style={style}
+                          level={8}
+                          ref={mapRef}
+                        >
+                          <MapMarker
+                            position={{
+                              lat: latitude,
+                              lng: longitude,
+                            }}
+                          />
+                        </Map>
+                      )}
+                      {/* <Map
                         center={{
                           lat: latitude,
                           lng: longitude,
@@ -204,7 +232,7 @@ function CommunityDetail({}) {
                             lng: longitude,
                           }}
                         />
-                      </Map>
+                      </Map> */}
                     </>
                   }
                 >
@@ -220,28 +248,20 @@ function CommunityDetail({}) {
                 </Card>
               </Row>
               <ButtonRow justify="end">
-                {currentUserData == "" ? (
+                {currentUserData === "" ? (
                   <NonIconBlueBtn
                     text="참여하려면 로그인하세요."
                     onClick={() => navigate(ROUTES.USER.LOGIN)}
                   />
+                ) : textState === "non" ? null : textState === "모집완료" ? (
+                  <NonIconBlueBtn text={textState} disabled={true} />
                 ) : (
-                  currentUserData.id != datas.user_id &&
-                  datas.station != "클린후기" &&
-                  (textState === "참여신청" ? (
-                    <NonIconBlueBtn
-                      onClick={() => (handleApply(), setTextState("참여취소"))}
-                      text={textState}
-                      disabled={!isLogin}
-                    ></NonIconBlueBtn>
-                  ) : personnel == datas.personnel ? (
-                    <Button disabled>모집 완료</Button>
-                  ) : (
-                    <NonIconBlueBtn
-                      onClick={() => (handleApply(), setTextState("참여신청"))}
-                      text={textState}
-                    ></NonIconBlueBtn>
-                  ))
+                  <NonIconBlueBtn
+                    onClick={() => {
+                      handleApply();
+                    }}
+                    text={textState}
+                  />
                 )}
               </ButtonRow>
             </Col>

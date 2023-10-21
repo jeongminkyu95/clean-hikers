@@ -95,7 +95,7 @@ function ProfileEdit({ setIsEdit, user, setUser }) {
         await api.put(`community/posts/byUser/${user.id}`, {
           nickname: user.nickname,
         });
-        await api.put(`community/posts/comment/byUser/${user.id}`, {
+        await api.put(`community/posts/comments/byUser/${user.id}`, {
           nickname: user.nickname,
         });
         enterLoading(0);

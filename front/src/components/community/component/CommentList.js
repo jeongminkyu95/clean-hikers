@@ -1,20 +1,15 @@
 import { Avatar } from "antd";
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { CommunityCommentList } from "../styledComponents/CommunityDetailStyled";
 import CommentDetail from "./CommentDetail";
 import CommentEdit from "./CommentEdit";
 import * as api from "../../../api/api";
-import { useNavigate } from "react-router-dom";
-import { UserOutlined } from "@ant-design/icons";
 
 function CommentList({ currentUserData, datas }) {
   const [comments, setComments] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [value, setValue] = useState("");
-  const [commentNum, setCommentNum] = useState(0);
   const newComments = [...comments];
-  const navigate = useNavigate();
 
   const currentUserId = currentUserData.id;
 
@@ -23,9 +18,7 @@ function CommentList({ currentUserData, datas }) {
       try {
         await api
           .get(`community/posts/comments`, `${datas.post_id}`)
-          .then(
-            (res) => (setComments(res.data), console.log(res.data[commentNum]))
-          );
+          .then((res) => setComments(res.data));
       } catch (res) {
         console.log(res);
       }
@@ -66,7 +59,10 @@ function CommentList({ currentUserData, datas }) {
     if (window.confirm("해당 댓글을 삭제하시겠습니까?")) {
       console.log(item);
       api.delete(`community/posts/comments`, `${item.comment_id}`);
-      return navigate(0);
+      setComments(
+        comments.filter((comment) => comment.comment_id !== item.comment_id)
+      );
+      setValue("");
     }
   };
   return (

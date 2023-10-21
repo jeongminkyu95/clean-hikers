@@ -113,8 +113,8 @@ function CommunityDetail({}) {
   const handleDelete = async function () {
     if (window.confirm("해당 게시물을 삭제하시겠습니까?")) {
       await api.delete(`community/posts/${no}`);
+      await api.delete(`community/${no}/comments`);
       alert("삭제가 완료되었습니다.");
-      return navigate(-1);
     }
   };
 
@@ -165,6 +165,7 @@ function CommunityDetail({}) {
               <Button
                 onClick={() => {
                   handleDelete();
+                  navigate(ROUTES.COMMUNITY.ROOT);
                 }}
               >
                 삭제
@@ -217,22 +218,6 @@ function CommunityDetail({}) {
                           />
                         </Map>
                       )}
-                      {/* <Map
-                        center={{
-                          lat: latitude,
-                          lng: longitude,
-                        }}
-                        style={style}
-                        level={8}
-                        ref={mapRef}
-                      >
-                        <MapMarker
-                          position={{
-                            lat: latitude,
-                            lng: longitude,
-                          }}
-                        />
-                      </Map> */}
                     </>
                   }
                 >

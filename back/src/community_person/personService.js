@@ -74,43 +74,6 @@ class personService {
       }
     }
   }
-
-  static async getPersons({ post_id }) {
-    const post = await postService.getAPosts({ post_id });
-    const people = post.person;
-    return people;
-  }
-
-  static async beingPerson({ post_id, email }) {
-    const post = await postService.getAPosts({ post_id });
-
-    const person = post.person;
-
-    const being = person.filter((item) => item.email == email);
-
-    if (being.length) {
-      return "1";
-    } else {
-      return "0";
-    }
-  }
-
-  // static async beingPerson({ post_id, email, user_id }) {
-  //     const post = await postService.getAPosts({ post_id });
-
-  //     if (post.user_id == user_id) {
-  //         const errorMessage = "참여하실 수 없습니다.";
-  //         return { errorMessage };
-  //     } else {
-  //         const person = post.person;
-  //         const being = person.map((item) => (item.email = email));
-  //         if (being.length) {
-  //             return "1";
-  //         } else {
-  //             return "0";
-  //         }
-  //     }
-  // }
 }
 
 export { personService };

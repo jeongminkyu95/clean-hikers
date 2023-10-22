@@ -8,7 +8,9 @@ class Comment {
 
   // 특정 게시글 댓글 조회
   static async findByPostId(post_id) {
-    return await CommentModel.find({ post_id: post_id });
+    return await CommentModel.find({ post_id: post_id }).select(
+      "user_id nickname description createdAt"
+    );
   }
 
   // 댓글의 작성자 닉네임 일괄 수정

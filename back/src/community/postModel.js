@@ -8,17 +8,23 @@ class Post {
 
   // user의 게시글 조회.
   static async findByUserId({ user_id }) {
-    return await PostModel.find({ user_id: user_id });
+    return await PostModel.find({ user_id: user_id }).select(
+      "post_id nickname title description location station createdAt"
+    );
   }
 
   // 등록된 모든 게시글 조회.
   static async findAll() {
-    return await PostModel.find();
+    return await PostModel.find().select(
+      "post_id nickname title description location station createdAt"
+    );
   }
 
   // 모집상태에 따른 게시글 조회.
   static async findByStation({ station }) {
-    return await PostModel.find({ station: station });
+    return await PostModel.find({ station: station }).select(
+      "post_id nickname title description location station createdAt"
+    );
   }
 
   // 특정 게시글 상세 조회
@@ -54,7 +60,7 @@ class Post {
         },
       },
       { new: true }
-    );
+    ).select("participants participantsLimit");
 
     if (newPost.participants.length == newPost.participantsLimit) {
       return await PostModel.updateOne(
@@ -75,7 +81,7 @@ class Post {
         },
       },
       { new: true }
-    );
+    ).select("station");
     if (newPost.station == "모집완료") {
       return await PostModel.updateOne(
         { post_id: post_id },

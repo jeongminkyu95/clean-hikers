@@ -7,6 +7,7 @@ class Mountain {
 
   static async findData(mountain, location, level) {
     const regex = (pattern) => new RegExp(`.*${pattern}.*`);
+    // console.log(mountain, location, level);
     const mountainRegex = regex(mountain);
     const locationRegex = regex(location);
     const difficultyRegex = regex(level);
@@ -21,6 +22,7 @@ class Mountain {
     if (level) {
       searchJson.difficulty = { $regex: difficultyRegex };
     }
+    // console.log(searchJson);
 
     return await MountainModel.find(searchJson);
   }

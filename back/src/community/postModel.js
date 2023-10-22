@@ -21,11 +21,6 @@ class Post {
     return await PostModel.find({ station: station });
   }
 
-  // 장소에 따른 게시글 조회
-  static async findByLocation({ locationDetail }) {
-    return await PostModel.find({ location: locationDetail });
-  }
-
   // 특정 게시글 상세 조회
   static async findByPostId(post_id) {
     const post = await PostModel.findOne({ post_id: post_id });

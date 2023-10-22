@@ -38,7 +38,6 @@ const PostSchema = new Schema(
     participants: [
       {
         type: Object,
-        // ref: "Person",
       },
     ],
     participantsLimit: {

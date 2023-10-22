@@ -49,6 +49,47 @@ class Post {
     return await PostModel.updateMany({ user_id: user_id }, toUpdate);
   }
 
+  // 참가자 추가.
+  static async addParticipant({ post_id, userObject }) {
+    const newPost = await PostModel.findOneAndUpdate(
+      { post_id: post_id },
+      {
+        $push: {
+          participants: userObject,
+        },
+      },
+      { new: true }
+    );
+
+    if (newPost.participants.length == newPost.participantsLimit) {
+      return await PostModel.updateOne(
+        { post_id: post_id },
+        { station: "모집완료" }
+      );
+    }
+    return newPost;
+  }
+
+  // 참가자 제거.
+  static async deleteParticipant({ post_id, email }) {
+    const newPost = await PostModel.findOneAndUpdate(
+      { post_id: post_id },
+      {
+        $pull: {
+          participants: { email: email },
+        },
+      },
+      { new: true }
+    );
+    if (newPost.station == "모집완료") {
+      return await PostModel.updateOne(
+        { post_id: post_id },
+        { station: "모집중" }
+      );
+    }
+    return newPost;
+  }
+
   // 게시글 삭제
   static async deleteByPostId(post_id) {
     const post = await PostModel.deleteOne({ post_id: post_id });

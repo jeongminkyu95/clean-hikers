@@ -7,14 +7,14 @@ class userService {
   // 유저 추가
   static async addUser({ email, nickname, password }) {
     // 유저 조회 by email
-    const user = await User.findByEmail(email);
+    const user = await User.checkByEmail(email);
     // 이미 존재하는 유저라면 throw 에러
     if (user) {
       throw new Error("이미 존재하는 이메일 입니다");
     }
 
     // 이미 존재하는 닉네임이라면 throw 에러
-    const nickExist = await User.findBynick(nickname);
+    const nickExist = await User.checkByNick(nickname);
     if (nickExist) {
       throw new Error("이미 존재하는 닉네임 입니다.");
     }
@@ -97,22 +97,22 @@ class userService {
     }
   }
 
-  // 유저 조회 by email
+  // 이메일 중복확인
   static async findUserByEmail(userMail) {
     try {
-      // 유저 조회 by email
-      const user = await User.findByEmail(userMail);
+      // 이메일 중복확인
+      const user = await User.checkByEmail(userMail);
       return user;
     } catch (error) {
       throw error;
     }
   }
 
-  // 유저 조회 by nick
+  // 닉네임 중복확인
   static async findUserBynick(nick) {
     try {
-      // 유저 조회 by nick
-      const user = await User.findBynick(nick);
+      // 닉네임 중복확인
+      const user = await User.checkByNick(nick);
       return user;
     } catch (error) {
       throw error;
@@ -122,7 +122,7 @@ class userService {
   // 유저 닉네임 변경
   static async changeUserNickname(userID, newNickname) {
     try {
-      const nickExist = await User.findBynick(newNickname);
+      const nickExist = await User.checkByNick(newNickname);
       if (nickExist) {
         throw new Error("이미 존재하는 닉네임입니다.");
       }

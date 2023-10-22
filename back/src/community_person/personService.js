@@ -1,77 +1,37 @@
-import { User } from "../mongoDB/index.js";
-import { postService } from "../community/postService.js";
+import { User, Post } from "../mongoDB/index.js";
 
 class personService {
+  // 참가자 추가 or 취소
   static async addPerson({ post_id, email }) {
-    const posts = await postService.getAPosts({ post_id });
+    // 게시글 조회 by post_id
+    const post = await Post.findByPostId(post_id);
+    // 유저의 참여 여부 확인
+    const participation = post.participants.find(
+      (participant) => participant.email == email
+    );
+    console.log(post);
 
-    const toUpdate = posts;
-
-    const people = toUpdate.person;
-
-    let beingPerson = people.find((item) => item.email == email);
-
-    if (beingPerson !== undefined) {
-      const idx = people.indexOf(beingPerson);
-      people.splice(idx, 1);
-
-      toUpdate.person = people;
-
-      toUpdate.count = people.length;
-
-      if (toUpdate.station == "모집완료") {
-        toUpdate.station = "모집중";
-        const deletedBeingPerson = await postService.setPost({
-          post_id,
-          toUpdate,
-        });
-
-        return deletedBeingPerson;
-      } else {
-        const deletedBeingPerson = await postService.setPost({
-          post_id,
-          toUpdate,
-        });
-
-        return deletedBeingPerson;
-      }
-    } else {
-      const newPerson = await User.findByEmail({ email });
-
-      const toUpdate = await postService.getAPosts({ post_id });
-
-      if (parseInt(toUpdate.count) === toUpdate.personnel) {
-        const errorMessage = "모집 인원이 마감되었습니다.";
-        return { errorMessage };
-      } else {
-        toUpdate.person.push(newPerson);
-
-        toUpdate.count = toUpdate.person.length;
-
-        const createPostPerson = await postService.setPost({
-          post_id,
-          toUpdate,
-        });
-
-        if (parseInt(toUpdate.count) == toUpdate.personnel) {
-          console.log("모집 인원이 마감되었습니다.");
-
-          toUpdate.station = "모집완료";
-
-          const createPostPerson = await postService.setPost({
-            post_id,
-            toUpdate,
-          });
-
-          createPostPerson.errorMessage = null;
-
-          return createPostPerson;
-        } else {
-          createPostPerson.errorMessage = null;
-
-          return createPostPerson;
-        }
-      }
+    const userObject = await User.findByEmail(email);
+    if (
+      post.station == "클린후기" ||
+      (post.station == "모집완료" && !participation)
+    ) {
+      throw new Error("참여할 수 없는 게시글입니다.");
+    } else if (
+      (post.station == "모집완료" && participation) ||
+      (post.station == "모집중" && participation)
+    ) {
+      const cancelParticipation = await Post.deleteParticipant({
+        post_id,
+        email,
+      });
+      return cancelParticipation;
+    } else if (post.station == "모집중" && !participation) {
+      const posterNewParticipant = await Post.addParticipant({
+        post_id,
+        userObject,
+      });
+      return posterNewParticipant;
     }
   }
 }

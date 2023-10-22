@@ -5,10 +5,12 @@ const PostSchema = new Schema(
     user_id: {
       type: String,
       required: true,
+      index: true,
     },
     post_id: {
       type: String,
       required: true,
+      index: true,
     },
     nickname: {
       type: String,
@@ -49,6 +51,7 @@ const PostSchema = new Schema(
     },
     station: {
       type: String,
+      index: true,
     },
   },
   {

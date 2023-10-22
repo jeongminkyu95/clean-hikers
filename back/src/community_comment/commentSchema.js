@@ -5,14 +5,17 @@ const CommentSchema = new Schema(
     comment_id: {
       type: String,
       required: true,
+      index: true,
     },
     post_id: {
       type: String,
       required: true,
+      index: true,
     },
     user_id: {
       type: String,
       required: true,
+      index: true,
     },
     nickname: {
       type: String,

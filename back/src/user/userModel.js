@@ -8,7 +8,9 @@ class User {
 
   // 유저 조회 by email
   static async findByEmail(userMail) {
-    const findUser = await UserModel.findOne({ email: userMail });
+    const findUser = await UserModel.findOne({ email: userMail }).select(
+      "id email password deleted"
+    );
     return findUser;
   }
 
@@ -18,10 +20,19 @@ class User {
     return findUser;
   }
 
-  // 유저 조회 by nick
-  static async findBynick(nick) {
-    const findUser = await UserModel.findOne({ nickname: nick });
-    return findUser;
+  // email check
+  static async checkByEmail(email) {
+    return await UserModel.findOne({ email: email }).select("email");
+  }
+
+  // nick check
+  static async checkByNick(nick) {
+    return await UserModel.findOne({ nickname: nick }).select("nick");
+  }
+
+  // posts participants 필드에 넣기위한 user_id
+  static async findByIdToParticipate(id) {
+    return await UserModel.findOne({ id: id }).select("-_id id nickname");
   }
 
   // 유저 조회 후 닉네임 변경

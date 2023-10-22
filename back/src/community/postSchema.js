@@ -41,11 +41,6 @@ const PostSchema = new Schema(
         // ref: "Person",
       },
     ],
-    count: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
     participantsLimit: {
       type: Number,
     },

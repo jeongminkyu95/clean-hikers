@@ -92,8 +92,11 @@ class Post {
   }
 
   // 게시글 삭제
-  static async deleteByPostId(post_id) {
-    const post = await PostModel.deleteOne({ post_id: post_id });
+  static async deleteByPostId({ post_id, user_id }) {
+    const post = await PostModel.deleteOne({
+      post_id: post_id,
+      user_id: user_id,
+    });
 
     if (post.deletedCount === 0) {
       throw new Error("해당 게시글을 삭제할 수 없습니다.");

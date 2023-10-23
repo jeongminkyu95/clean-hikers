@@ -89,8 +89,8 @@ class postService {
   }
 
   // 게시글 삭제
-  static async deletePost(post_id) {
-    const posts = await Post.deleteByPostId(post_id);
+  static async deletePost({ post_id, user_id }) {
+    const posts = await Post.deleteByPostId({ post_id, user_id });
 
     return posts;
   }

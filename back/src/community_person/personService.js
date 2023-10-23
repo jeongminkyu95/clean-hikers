@@ -2,16 +2,15 @@ import { User, Post } from "../mongoDB/index.js";
 
 class personService {
   // 참가자 추가 or 취소
-  static async addPerson({ post_id, email }) {
+  static async addPerson({ post_id, user_id }) {
     // 게시글 조회 by post_id
     const post = await Post.findByPostId(post_id);
     // 유저의 참여 여부 확인
     const participation = post.participants.find(
-      (participant) => participant.email == email
+      (participant) => participant.id == user_id
     );
-    console.log(post);
 
-    const userObject = await User.findByEmail(email);
+    const userObject = await User.findByIdToParticipate(user_id);
     if (
       post.station == "클린후기" ||
       (post.station == "모집완료" && !participation)
@@ -23,7 +22,7 @@ class personService {
     ) {
       const cancelParticipation = await Post.deleteParticipant({
         post_id,
-        email,
+        user_id,
       });
       return cancelParticipation;
     } else if (post.station == "모집중" && !participation) {

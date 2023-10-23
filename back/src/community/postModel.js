@@ -72,12 +72,12 @@ class Post {
   }
 
   // 참가자 제거.
-  static async deleteParticipant({ post_id, email }) {
+  static async deleteParticipant({ post_id, user_id }) {
     const newPost = await PostModel.findOneAndUpdate(
       { post_id: post_id },
       {
         $pull: {
-          participants: { email: email },
+          participants: { id: user_id },
         },
       },
       { new: true }

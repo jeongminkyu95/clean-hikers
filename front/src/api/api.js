@@ -8,7 +8,7 @@ async function get(endpoint, params = "") {
   console.log(`GET ${serverUrl + endpoint + "/" + params}`);
   return axios.get(serverUrl + endpoint + "/" + params, {
     headers: {
-      Authorization: `${sessionStorage.getItem("userToken")}`,
+      Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
     },
   });
 }
@@ -30,7 +30,7 @@ async function put(endpoint, data) {
   return axios.put(serverUrl + endpoint, bodyData, {
     headers: {
       "Content-Type": "application/json",
-      Authorization: `${sessionStorage.getItem("userToken")}`,
+      Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
     },
   });
 }
@@ -39,7 +39,7 @@ async function del(endpoint, params = "") {
   console.log(`DELETE ${serverUrl + endpoint + "/" + params}`);
   return axios.delete(serverUrl + endpoint + "/" + params, {
     headers: {
-      Authorization: `${sessionStorage.getItem("userToken")}`,
+      Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
     },
   });
 }

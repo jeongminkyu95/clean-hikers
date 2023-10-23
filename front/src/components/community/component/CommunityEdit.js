@@ -60,6 +60,7 @@ function CommunityEdit() {
   const onFinish = async (value) => {
     await api
       .put(`community/posts/${datas.post_id}`, {
+        user_id: datas.user_id,
         title: value.title,
         description: value.description,
       })

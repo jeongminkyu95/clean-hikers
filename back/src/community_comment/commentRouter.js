@@ -1,18 +1,23 @@
 import { Router } from "express";
 import { commentService } from "./commentService.js";
+import { loginRequired } from "../middlewares/loginRequired.js";
 
 const commentRouter = Router();
 
 // 댓글 추가
-commentRouter.post("/posts/comment", async function (req, res, next) {
-  try {
-    const newComment = await commentService.addComment(req.body);
+commentRouter.post(
+  "/posts/comment",
+  loginRequired,
+  async function (req, res, next) {
+    try {
+      const newComment = await commentService.addComment(req.body);
 
-    res.status(201).json(newComment);
-  } catch (error) {
-    next(error);
+      res.status(201).json(newComment);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 // 해당 게시글의 댓글 조회
 commentRouter.get("/posts/comments/:postId", async function (req, res, next) {
@@ -27,6 +32,7 @@ commentRouter.get("/posts/comments/:postId", async function (req, res, next) {
 // 유저 닉네임 변경시 해당 유저의 댓글들 일괄 수정
 commentRouter.put(
   "/posts/comments/byUser/:userId",
+  loginRequired,
   async function (req, res, next) {
     try {
       const user_id = req.params.userId;
@@ -46,7 +52,8 @@ commentRouter.put(
 
 // 댓글 삭제
 commentRouter.delete(
-  "/posts/comments/:commentId",
+  "/posts/:userId/comments/:commentId/",
+  loginRequired,
   async function (req, res, next) {
     try {
       await commentService.deleteComment(req.params.commentId);

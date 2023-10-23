@@ -58,7 +58,10 @@ function CommentList({ currentUserData, datas }) {
   const handleDelete = function (item) {
     if (window.confirm("해당 댓글을 삭제하시겠습니까?")) {
       console.log(item);
-      api.delete(`community/posts/comments`, `${item.comment_id}`);
+      api.delete(
+        `community/${item.user_id}/posts/comments`,
+        `${item.comment_id}`
+      );
       setComments(
         comments.filter((comment) => comment.comment_id !== item.comment_id)
       );

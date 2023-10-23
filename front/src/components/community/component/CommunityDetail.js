@@ -124,7 +124,7 @@ function CommunityDetail({}) {
       try {
         await api.post(`community/posts/${no}/participants`, {
           post_id: no,
-          email: currentUserData.email,
+          user_id: currentUserData.id,
         });
 
         alert(`${textState} 완료되었습니다.`);

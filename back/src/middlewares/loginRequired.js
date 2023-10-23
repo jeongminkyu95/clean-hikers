@@ -1,11 +1,11 @@
 import jwt from "jsonwebtoken";
-import { NotLoginUser, TokenNotFoundError } from "../utils/CustomError.js";
-import { throwIfNoData } from "../utils/throwIfNoData.js";
+import { NotLoginUser, InvalidTokenError } from "../utils/CustomError.js";
+import { throwErrorIfDataExists } from "../utils/throwErrorIfDataExists.js";
 
 const loginRequired = (req, res, next) => {
   try {
     // 토큰이 없다면 로그인이 필요한 서비스라는 에러메시지 throw
-    throwIfNoData(req.headers.authorization, NotLoginUser);
+    throwErrorIfDataExists(!req.headers.authorization, NotLoginUser);
 
     const token = req.headers.authorization.split(" ")[1];
 
@@ -20,11 +20,11 @@ const loginRequired = (req, res, next) => {
     // 토큰과 user_id 일치 여부 체크
     if (req.params.userId) {
       if (req.params.userId !== req.loginedUser.id) {
-        throw new NotLoginUser(); // 에러 내용 바꿀 예정
+        throw new InvalidTokenError(); // 에러 내용 바꿀 예정
       }
     } else if (req.body.user_id) {
       if (req.body.user_id !== req.loginedUser.id) {
-        throw new NotLoginUser();
+        throw new InvalidTokenError();
       }
     }
 

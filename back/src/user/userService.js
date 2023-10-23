@@ -2,22 +2,27 @@ import { User } from "../mongoDB/index.js";
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
 import jwt from "jsonwebtoken";
+import {
+  DuplicateEmailError,
+  DuplicateNickError,
+  UserNotFoundError,
+  Unauthorized,
+} from "../utils/CustomError.js";
+import { throwErrorIfDataExists } from "../utils/throwErrorIfDataExists.js";
 
 class userService {
   // 유저 추가
   static async addUser({ email, nickname, password }) {
     // 유저 조회 by email
     const user = await User.checkByEmail(email);
+
     // 이미 존재하는 유저라면 throw 에러
-    if (user) {
-      throw new Error("이미 존재하는 이메일 입니다");
-    }
+    throwErrorIfDataExists(user, DuplicateEmailError);
+
+    const nickExist = await User.checkByNick(nickname);
 
     // 이미 존재하는 닉네임이라면 throw 에러
-    const nickExist = await User.checkByNick(nickname);
-    if (nickExist) {
-      throw new Error("이미 존재하는 닉네임 입니다.");
-    }
+    throwErrorIfDataExists(nickExist, DuplicateNickError);
 
     // 비밀번호 해쉬화
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -38,18 +43,16 @@ class userService {
       // 유저 조회 by email
       const userEmail = await User.findByEmail(email);
 
-      if (!userEmail) {
-        throw new Error("해당 유저는 존재하지 않습니다");
-      }
+      // 조회된 유저가 없다면 UserNotFoundError 에러
+      throwErrorIfDataExists(!userEmail, UserNotFoundError);
 
       // DB에 저장되어있는 비밀번호
       const correctPassword = userEmail.password;
       // 입력 받은 비밀번호와 DB에 있는 비밀번호와 비교
       const isPasswordRight = await bcrypt.compare(password, correctPassword);
 
-      if (!isPasswordRight) {
-        throw new Error("비밀번호가 틀렸습니다");
-      }
+      // 비밀번호가 틀리다면 Unauthorized 에러
+      throwErrorIfDataExists(!isPasswordRight, Unauthorized);
 
       // test용 admin계정용
       if (userEmail.email == process.env.AdminEmail) {
@@ -57,9 +60,7 @@ class userService {
       }
 
       // 탈퇴한 유저라면 로그인 불가
-      if (userEmail.deleted == true) {
-        throw new Error("탈퇴한 유저입니다");
-      }
+      throwErrorIfDataExists(userEmail.deleted == true, UserNotFoundError);
 
       const secretKey = process.env.JWT_SECRET_KEY;
 
@@ -85,12 +86,13 @@ class userService {
     try {
       // 유저 조회 by id
       const user = await User.findByID(userID);
-      if (!user) {
-        throw new Error("해당 유저는 존재하지 않습니다.");
-      }
-      if (user.deleted == true) {
-        throw new Error("해당 유저는 탈퇴한 유저입니다.");
-      }
+
+      // 조회된 유저가 없다면 UserNotFoundError 에러
+      throwErrorIfDataExists(!user, UserNotFoundError);
+
+      // 조회된 유저가 탈퇴한 상태라면 UserNotFoundError 에러
+      throwErrorIfDataExists(user.deleted == true, UserNotFoundError);
+
       return user;
     } catch (error) {
       throw error;
@@ -123,18 +125,15 @@ class userService {
   static async changeUserNickname(userID, newNickname) {
     try {
       const nickExist = await User.checkByNick(newNickname);
-      if (nickExist) {
-        throw new Error("이미 존재하는 닉네임입니다.");
-      }
+
+      // 닉네임이 중복됐다면 DuplicateNickError 에러
+      throwErrorIfDataExists(nickExist, DuplicateNickError);
 
       // 유저 닉네임 변경
       const currentUser = await User.findByIDandChangeNickname(
         userID,
         newNickname
       );
-      if (!currentUser) {
-        throw new Error("해당 유저는 존재하지 않습니다-nickname");
-      }
       return currentUser;
     } catch (error) {
       throw error;
@@ -150,9 +149,6 @@ class userService {
         userID,
         encryptPassword
       );
-      if (!currentUser) {
-        throw new Error("해당 유저는 존재하지 않습니다-password");
-      }
       return currentUser;
     } catch (error) {
       throw error;
@@ -166,9 +162,7 @@ class userService {
         userID,
         imageString
       );
-      if (!createImage) {
-        throw new Error("해당 유저는 존재하지 않습니다");
-      }
+
       return createImage;
     } catch (error) {
       throw error;
@@ -180,9 +174,6 @@ class userService {
     try {
       // 유저 삭제
       const deleteUser = await User.findByIDandDeleteUser(id);
-      if (!deleteUser) {
-        throw new Error("해당 유저는 존재하지 않습니다");
-      }
 
       const result = {
         data: deleteUser,

@@ -1,7 +1,8 @@
 import { Post, Mountain } from "../mongoDB/index.js";
 import { v4 } from "uuid";
-import { throwIfNoData } from "../utils/throwIfNoData.js";
+import { throwErrorIfDataExists } from "../utils/throwErrorIfDataExists.js";
 import { paginateAndTotalPage } from "../utils/paginateAndTotalPage.js";
+import { PostNotFoundError } from "../utils/CustomError.js";
 
 class postService {
   // 게시글 생성
@@ -10,8 +11,8 @@ class postService {
     const [locationDetail] = await Mountain.findData(newPost.location);
 
     // 입력된 산의 이름과 조회한 산의 이름이 다른 경우 에러.
-    throwIfNoData(
-      newPost.location == locationDetail.name,
+    throwErrorIfDataExists(
+      newPost.location !== locationDetail.name,
       Error,
       `선택하신 산(${newPost.location})과 조회된 산(${locationDetail.name})의 정보가 일치하지 않습니다.`
     );
@@ -21,7 +22,8 @@ class postService {
 
     const post = await Post.create(newPost);
 
-    throwIfNoData(post, Error, "게시글이 생성되지 않았습니다.");
+    // 생성된 게시글이 존재하지 않다면 에러
+    throwErrorIfDataExists(!post, PostNotFoundError);
 
     return post;
   }

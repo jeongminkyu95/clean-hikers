@@ -1,8 +1,6 @@
 import { Router } from "express";
 import { loginRequired } from "../middlewares/loginRequired.js";
-import { NotLoginUser } from "../utils/CustomError.js";
 import { postService } from "./postService.js";
-import { throwIfNoData } from "../utils/throwIfNoData.js";
 
 const postRouter = Router();
 

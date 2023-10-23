@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { locationService } from "./locationService.js";
-import { ErrorMessage } from "../middlewares/errorMiddleware.js";
 
 const locationRouter = Router();
 
@@ -12,7 +11,6 @@ locationRouter.get("/location", async function (req, res, next) {
       return object.name;
     });
 
-    ErrorMessage(name);
     res.status(200).send(name);
   } catch (error) {
     next(error);

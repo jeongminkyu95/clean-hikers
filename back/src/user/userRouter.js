@@ -71,11 +71,9 @@ userRouter.get("/user-page", loginRequired, async (req, res, next) => {
 userRouter.put("/nickname", loginRequired, async (req, res, next) => {
   try {
     // 유저 닉네임 변경
-    const currentUser = await userService.changeUserNickname(
-      req.loginedUser.id,
-      req.body.nickname
-    );
-    res.status(201).json(currentUser);
+    await userService.changeUserNickname(req.loginedUser.id, req.body.nickname);
+
+    res.status(201).send("ok");
   } catch (error) {
     next(error);
   }
@@ -85,11 +83,8 @@ userRouter.put("/nickname", loginRequired, async (req, res, next) => {
 userRouter.put("/password", loginRequired, async (req, res, next) => {
   try {
     // 유저 비밀번호 변경
-    const currentUser = await userService.changeUserPassword(
-      req.loginedUser.id,
-      req.body.password
-    );
-    res.status(201).json(currentUser);
+    await userService.changeUserPassword(req.loginedUser.id, req.body.password);
+    res.status(201).send("ok");
   } catch (error) {
     next(error);
   }

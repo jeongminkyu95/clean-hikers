@@ -21,12 +21,13 @@ postRouter.get(
   async function (req, res, next) {
     try {
       const user_id = req.params.userId;
-      const pagination = req.query;
+      const { page, perPage } = req.query;
 
       // 사용자의 모든 게시물을 조회하고 페이지네이션 적용
       const posts = await postService.getUserPosts({
         user_id,
-        pagination,
+        page,
+        perPage,
       });
 
       res.status(200).send(posts);

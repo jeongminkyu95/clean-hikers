@@ -1,7 +1,6 @@
 import { Post, Mountain } from "../mongoDB/index.js";
 import { v4 } from "uuid";
 import { throwErrorIfDataExists } from "../utils/throwErrorIfDataExists.js";
-import { paginateAndTotalPage } from "../utils/paginateAndTotalPage.js";
 import { PostNotFoundError } from "../utils/CustomError.js";
 
 class postService {
@@ -29,14 +28,18 @@ class postService {
   }
 
   // 마이페이지 작성 게시글 조회 (페이지네이션 5개씩)
-  static async getUserPosts({ user_id, pagination }) {
+  static async getUserPosts({ user_id, page, perPage }) {
     // 유저의 작성 게시글들 조회 후 페이지네이션 적용
-    const posts = await Post.findByUserId({ user_id });
-    const page = Number(pagination.page || 1);
-    const perPage = Number(pagination.perPage || 5);
+    const query = { user_id };
+    const paginatedPosts = await Post.findAndPaginatePostsByQuery({
+      query,
+      page,
+      perPage,
+    });
+    const totalPostsCount = await Post.countByStation({ query });
+    const totalPage = Math.ceil(totalPostsCount / perPage);
 
-    // return { paginatedPosts, totalPage }
-    return paginateAndTotalPage(posts, page, perPage);
+    return { paginatedPosts, totalPage };
   }
 
   // 특정 게시글 조회
@@ -47,13 +50,21 @@ class postService {
   // 상태별 게시글 조회 5개씩
   static async getAllPosts({ station, page, perPage }) {
     // 'station' 파라미터에 따라 모든 게시물 또는 특정 상태의 게시물을 조회하고 페이지네이션 적용
+    let query;
     if (station == "allPosts") {
-      const posts = await Post.findAll();
-      return paginateAndTotalPage(posts, page, perPage); // {paginatedPosts, totalPage}
+      query = {};
     } else {
-      const posts = await Post.findByStation({ station });
-      return paginateAndTotalPage(posts, page, perPage); // {paginatedPosts, totalPage}
+      query = { station };
     }
+    const paginatedPosts = await Post.findAndPaginatePostsByQuery({
+      query,
+      page,
+      perPage,
+    });
+    const totalPostsCount = await Post.countByStation({ query });
+    const totalPage = Math.ceil(totalPostsCount / perPage);
+
+    return { paginatedPosts, totalPage };
   }
 
   // 게시글 수정

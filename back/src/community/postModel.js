@@ -20,11 +20,18 @@ class Post {
     );
   }
 
+  // 모집상태에 따른 게시글 수 조회
+  static async countByStation({ query }) {
+    return await PostModel.countDocuments(query);
+  }
+
   // 모집상태에 따른 게시글 조회.
-  static async findByStation({ station }) {
-    return await PostModel.find({ station: station }).select(
-      "post_id nickname title description location station createdAt"
-    );
+  static async findAndPaginatePostsByQuery({ query, page, perPage }) {
+    return await PostModel.find(query)
+      .sort({ createdAt: -1 })
+      .skip(perPage * (page - 1))
+      .limit(perPage)
+      .select("post_id nickname title description location station createdAt");
   }
 
   // 특정 게시글 상세 조회

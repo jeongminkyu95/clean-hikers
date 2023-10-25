@@ -53,6 +53,7 @@ const PostSchema = new Schema(
   }
 );
 
+PostSchema.index({ createdAt: -1 });
 const PostModel = model("Post", PostSchema);
 
 export { PostModel };

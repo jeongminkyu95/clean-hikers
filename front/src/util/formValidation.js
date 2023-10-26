@@ -25,7 +25,7 @@ export function validateNickName(_, value) {
   if (/\s/.test(value)) {
     return Promise.reject(new Error("닉네임은 공백을 포함 할 수 없습니다."));
   }
-  const regExp = /^[A-Za-z0-9]{2,}$/;
+  const regExp = /^[A-Za-z0-9가-힣]{2,}$/;
   if (!regExp.test(value)) {
     return Promise.reject(
       new Error("닉네임은 두 자 이상 열 자 이하로 입력해 주세요.")
@@ -38,7 +38,7 @@ export function validateNickCheck(nickname) {
   if (!nickname || /\s/.test(nickname)) {
     return false;
   }
-  const regExp = /^[A-Za-z0-9]{2,}$/;
+  const regExp = /^[A-Za-z0-9가-힣]{2,}$/;
   return regExp.test(nickname);
 }
 

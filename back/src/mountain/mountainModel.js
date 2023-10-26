@@ -22,9 +22,8 @@ class Mountain {
     if (level) {
       searchJson.difficulty = { $regex: difficultyRegex };
     }
-    // console.log(searchJson);
 
-    return await MountainModel.find(searchJson);
+    return await MountainModel.find(searchJson).sort({ name: 1 });
   }
 }
 

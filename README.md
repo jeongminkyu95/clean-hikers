@@ -2,14 +2,6 @@
 
 **쓰레기를 주우며 등산하는 활동에 참여할 수 있도록 독려하는 서비스**
 
-최종 배포 사이트 이미지 or gif
-
-🔗[SITE](http://kdt-ai5-team10.elicecoding.com/)
-
-🔗[GITLAB](https://kdt-gitlab.elice.io/ai_track/class05/data_project/team10)
-
-🔗[NOTION](https://www.notion.so/elice/10-ecf497e4ad4f4a99a85e4f2059a53db0)
-
 ---
 
 ## 목차
@@ -432,3 +424,26 @@ Mountain MVP [back]
 ```
 
 </details>
+
+## 6. 시연
+
+- 메인페이지
+  <img src='./data/img/main.gif' title="Main">
+
+- 회원가입
+  <img src='./data/img/register.gif' title="Register">
+
+- 로그인
+  <img src='./data/img/login.gif' title="Login">
+
+- 산 조회 페이지
+  <img src='./data/img/mountainPage.gif' title="MountainPage">
+
+- 커뮤니티 페이지
+  <img src='./data/img/communityPage.gif.gif' title="CommunityPage">
+
+- 게시글
+  <img src='./data/img/post.gif' title="Post">
+
+- 참가하기 기능
+  <img src='./data/img/participate.gif' title="Participate">

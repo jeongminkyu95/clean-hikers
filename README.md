@@ -440,7 +440,7 @@ Mountain MVP [back]
   <img src='./data/img/mountainPage.gif' title="MountainPage">
 
 - 커뮤니티 페이지
-  <img src='./data/img/communityPage.gif.gif' title="CommunityPage">
+  <img src='./data/img/communityPage.gif' title="CommunityPage">
 
 - 게시글
   <img src='./data/img/post.gif' title="Post">

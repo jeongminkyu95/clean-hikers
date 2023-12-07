@@ -39,6 +39,7 @@ class MountainService {
       result["maxPage"] = totalPage;
       return result;
     } catch (error) {
+      console.error(error);
       throw error;
     }
   }
@@ -55,6 +56,7 @@ class MountainService {
 
       return result;
     } catch (error) {
+      console.error(error);
       throw error;
     }
   }

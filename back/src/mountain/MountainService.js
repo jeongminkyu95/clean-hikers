@@ -12,7 +12,7 @@ class MountainService {
         mountainDifficulty
       );
 
-      var page = Number(query.currentPage || 1);
+      let page = Number(query.currentPage || 1);
       const perPage = 5;
 
       const total = totalData.length;
@@ -27,7 +27,7 @@ class MountainService {
       );
       const result = {};
 
-      for (var i = 0; i < currentPageList.length; i++) {
+      for (let i = 0; i < currentPageList.length; i++) {
         if (currentPageList[i] == undefined) {
           result.mountain = currentPageList.slice(0, i);
           break;

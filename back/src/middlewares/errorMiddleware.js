@@ -8,63 +8,26 @@ function errorMiddleware(error, req, res, next) {
     `${"-".repeat(33)}\n`
   );
 
+  const errorResponse = (status, error) =>
+    res.status(status).json({
+      error: {
+        name: error.name,
+        message: error.message,
+      },
+    });
+
   switch (error.name) {
     case "ValidationError":
-      return res.status(400).json({
-        error: {
-          name: error.name,
-          message: error.message,
-        },
-      });
+      return errorResponse(400, error);
     case "NotLoginUser":
-      return res.status(401).json({
-        error: {
-          name: error.name,
-          message: error.message,
-        },
-      });
-    case "JsonWebTokenError":
-      return res.status(401).json({
-        error: {
-          name: error.name,
-          message: "정상적인 토큰이 아닙니다. 다시 한 번 확인해 주세요.",
-        },
-      });
     case "InvalidTokenError":
-      return res.status(401).json({
-        error: {
-          name: error.name,
-          message: error.message,
-        },
-      });
+      return errorResponse(401, error);
     case "UserNotFoundError":
-      return res.status(404).json({
-        error: {
-          name: error.name,
-          message: error.message,
-        },
-      });
-    case "DuplicateEmailError":
-      return res.status(409).json({
-        error: {
-          name: error.name,
-          message: error.message,
-        },
-      });
-    case "DuplicateNickError":
-      return res.status(409).json({
-        error: {
-          name: error.name,
-          message: error.message,
-        },
-      });
     case "PostNotFoundError":
-      return res.status(404).json({
-        error: {
-          name: error.name,
-          message: error.message,
-        },
-      });
+      return errorResponse(404, error);
+    case "DuplicateEmailError":
+    case "DuplicateNickError":
+      return errorResponse(409, error);
     default:
       return res.status(400).send(error.message);
   }

@@ -1,5 +1,4 @@
 import { Mountain } from "../mongoDB/index.js";
-import { MountainModel } from "./mountainSchema.js";
 
 class MountainService {
   static async readData(query) {
@@ -7,7 +6,6 @@ class MountainService {
       const mountainName = query.mountain || null;
       const mountainLocation = query.location || null;
       const mountainDifficulty = query.level || null;
-      // console.log(mountainName, mountainLocation, mountainDifficulty);
       const totalData = await Mountain.findData(
         mountainName,
         mountainLocation,
@@ -18,7 +16,6 @@ class MountainService {
       const perPage = 5;
 
       const total = totalData.length;
-      // console.log(total);
 
       const totalPage = Math.ceil(total / perPage);
       if (page > totalPage) {
@@ -31,7 +28,6 @@ class MountainService {
       const result = {};
 
       for (var i = 0; i < currentPageList.length; i++) {
-        // console.log(currentPageList[i])
         if (currentPageList[i] == undefined) {
           result.mountain = currentPageList.slice(0, i);
           break;
@@ -41,7 +37,6 @@ class MountainService {
         }
       }
       result["maxPage"] = totalPage;
-      // console.log(typeof(result))
       return result;
     } catch (error) {
       throw error;

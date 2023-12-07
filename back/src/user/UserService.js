@@ -10,7 +10,7 @@ import {
 } from "../utils/CustomError.js";
 import { throwErrorIfDataExists } from "../utils/throwErrorIfDataExists.js";
 
-class userService {
+class UserService {
   // 유저 추가
   static async addUser({ email, nickname, password }) {
     // 유저 조회 by email
@@ -186,4 +186,4 @@ class userService {
   }
 }
 
-export { userService };
+export { UserService };

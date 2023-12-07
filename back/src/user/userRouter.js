@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { userService } from "./userService.js";
+import { UserService } from "./UserService.js";
 import { loginRequired } from "../middlewares/loginRequired.js";
 
 const userRouter = Router();
@@ -8,7 +8,7 @@ const userRouter = Router();
 userRouter.post("/register", async (req, res, next) => {
   try {
     // 유저생성
-    const newUser = await userService.addUser(req.body);
+    const newUser = await UserService.addUser(req.body);
     res.status(201).json(newUser);
   } catch (error) {
     next(error);
@@ -19,7 +19,7 @@ userRouter.post("/register", async (req, res, next) => {
 userRouter.post("/email-check", async (req, res, next) => {
   try {
     // 이메일 조회
-    const emailExist = await userService.findUserByEmail(req.body.email);
+    const emailExist = await UserService.findUserByEmail(req.body.email);
     if (!emailExist) {
       res.status(201).json({ message: "사용할 수 있는 이메일입니다" });
     } else {
@@ -34,7 +34,7 @@ userRouter.post("/email-check", async (req, res, next) => {
 userRouter.post("/nick-check", async (req, res, next) => {
   try {
     // 닉네임 조회
-    const nickExist = await userService.findUserBynick(req.body.nickname);
+    const nickExist = await UserService.findUserBynick(req.body.nickname);
     if (!nickExist) {
       res.status(201).json({ message: "사용할 수 있는 닉네임입니다" });
     } else {
@@ -49,7 +49,7 @@ userRouter.post("/nick-check", async (req, res, next) => {
 userRouter.post("/login", async (req, res, next) => {
   try {
     // 로그인
-    const login = await userService.login(req.body);
+    const login = await UserService.login(req.body);
     res.status(201).json({ jwt: login });
   } catch (error) {
     next(error);
@@ -60,7 +60,7 @@ userRouter.post("/login", async (req, res, next) => {
 userRouter.get("/user-page", loginRequired, async (req, res, next) => {
   try {
     // 유저 조회 by id
-    const user = await userService.findUserById(req.loginedUser.id);
+    const user = await UserService.findUserById(req.loginedUser.id);
     res.status(201).json(user);
   } catch (error) {
     next(error);
@@ -71,7 +71,7 @@ userRouter.get("/user-page", loginRequired, async (req, res, next) => {
 userRouter.put("/nickname", loginRequired, async (req, res, next) => {
   try {
     // 유저 닉네임 변경
-    await userService.changeUserNickname(req.loginedUser.id, req.body.nickname);
+    await UserService.changeUserNickname(req.loginedUser.id, req.body.nickname);
 
     res.status(201).send("ok");
   } catch (error) {
@@ -83,7 +83,7 @@ userRouter.put("/nickname", loginRequired, async (req, res, next) => {
 userRouter.put("/password", loginRequired, async (req, res, next) => {
   try {
     // 유저 비밀번호 변경
-    await userService.changeUserPassword(req.loginedUser.id, req.body.password);
+    await UserService.changeUserPassword(req.loginedUser.id, req.body.password);
     res.status(201).send("ok");
   } catch (error) {
     next(error);
@@ -94,7 +94,7 @@ userRouter.put("/password", loginRequired, async (req, res, next) => {
 userRouter.put("/picture", loginRequired, async (req, res, next) => {
   try {
     // 유저 사진 변경
-    const currentUser = await userService.changeUserImage(
+    const currentUser = await UserService.changeUserImage(
       req.loginedUser.id,
       req.body.image
     );
@@ -108,7 +108,7 @@ userRouter.put("/picture", loginRequired, async (req, res, next) => {
 userRouter.delete("/", loginRequired, async (req, res, next) => {
   try {
     // 유저 삭제 by id
-    const currentUser = await userService.deleteUser(req.loginedUser.id);
+    const currentUser = await UserService.deleteUser(req.loginedUser.id);
 
     res.status(201).json(currentUser);
   } catch (error) {

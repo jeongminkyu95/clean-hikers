@@ -2,7 +2,7 @@ import { User, Post } from "../mongoDB/index.js";
 import { throwErrorIfDataExists } from "../utils/throwErrorIfDataExists.js";
 import { PostNotFoundError } from "../utils/CustomError.js";
 
-class personService {
+class PersonService {
   // 참가자 추가 or 취소
   static async addPerson({ post_id, user_id }) {
     // 게시글 조회 by post_id
@@ -41,4 +41,4 @@ class personService {
   }
 }
 
-export { personService };
+export { PersonService };

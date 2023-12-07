@@ -1,7 +1,7 @@
 import { Mountain } from "../mongoDB/index.js";
 import { MountainModel } from "./mountainSchema.js";
 
-class mountainService {
+class MountainService {
   static async readData(query) {
     try {
       const mountainName = query.mountain || null;
@@ -65,4 +65,4 @@ class mountainService {
   }
 }
 
-export { mountainService };
+export { MountainService };

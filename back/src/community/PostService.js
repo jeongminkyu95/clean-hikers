@@ -3,7 +3,7 @@ import { v4 } from "uuid";
 import { throwErrorIfDataExists } from "../utils/throwErrorIfDataExists.js";
 import { PostNotFoundError } from "../utils/CustomError.js";
 
-class postService {
+class PostService {
   // 게시글 생성
   static async addPost(newPost) {
     // 입력된 산으로 해당 산의 디테일 정보 조회.
@@ -109,4 +109,4 @@ class postService {
   }
 }
 
-export { postService };
+export { PostService };

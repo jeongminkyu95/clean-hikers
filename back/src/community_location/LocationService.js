@@ -1,6 +1,6 @@
 import { Mountain } from "../mongoDB/index.js";
 
-class locationService {
+class LocationService {
   static async getData() {
     return await Mountain.findData();
   }
@@ -10,4 +10,4 @@ class locationService {
   }
 }
 
-export { locationService };
+export { LocationService };

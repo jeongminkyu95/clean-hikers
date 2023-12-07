@@ -1,7 +1,7 @@
 import { v4 } from "uuid";
 import { Comment } from "../mongoDB/index.js";
 
-class commentService {
+class CommentService {
   // 댓글 생성
   static async addComment({ post_id, user_id, nickname, description }) {
     const comment_id = v4();
@@ -40,4 +40,4 @@ class commentService {
   }
 }
 
-export { commentService };
+export { CommentService };

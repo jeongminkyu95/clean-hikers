@@ -1,13 +1,13 @@
 import { Router } from "express";
 import { loginRequired } from "../middlewares/loginRequired.js";
-import { postService } from "./postService.js";
+import { PostService } from "./PostService.js";
 
 const postRouter = Router();
 
 // 게시글 추가
 postRouter.post("/post", loginRequired, async function (req, res, next) {
   try {
-    const newPost = await postService.addPost(req.body);
+    const newPost = await PostService.addPost(req.body);
     res.status(201).json(newPost);
   } catch (error) {
     next(error);
@@ -24,7 +24,7 @@ postRouter.get(
       const { page, perPage } = req.query;
 
       // 사용자의 모든 게시물을 조회하고 페이지네이션 적용
-      const posts = await postService.getUserPosts({
+      const posts = await PostService.getUserPosts({
         user_id,
         page,
         perPage,
@@ -43,7 +43,7 @@ postRouter.get("/postlist", async function (req, res, next) {
     const { page, perPage, station } = req.query;
 
     // 지정된 station에 따라 모든 게시물을 조회하고 페이지네이션 적용
-    const postList = await postService.getAllPosts({ page, perPage, station });
+    const postList = await PostService.getAllPosts({ page, perPage, station });
     res.status(200).send(postList);
   } catch (error) {
     next(error);
@@ -53,7 +53,7 @@ postRouter.get("/postlist", async function (req, res, next) {
 //특정 게시글 상세 조회
 postRouter.get("/postsDetail/:postId", async function (req, res, next) {
   try {
-    const posts = await postService.getPostDetail(req.params.postId);
+    const posts = await PostService.getPostDetail(req.params.postId);
 
     res.status(200).send(posts);
   } catch (error) {
@@ -70,7 +70,7 @@ postRouter.put(
       const post_id = req.params.postId;
       const toUpdate = req.body;
 
-      const updatedPost = await postService.setPost({
+      const updatedPost = await PostService.setPost({
         post_id,
         toUpdate,
       });
@@ -92,7 +92,7 @@ postRouter.put(
       const toUpdate = req.body;
 
       // 사용자의 닉네임 변경 후 그에 따라 해당 사용자가 작성한 모든 게시물의 닉네임도 업데이트함.
-      await postService.changeNicknamePost({
+      await PostService.changeNicknamePost({
         user_id,
         toUpdate,
       });
@@ -113,7 +113,7 @@ postRouter.delete(
       const post_id = req.params.postId;
       const user_id = req.loginedUser.id;
 
-      await postService.deletePost({ post_id, user_id });
+      await PostService.deletePost({ post_id, user_id });
 
       res.send("삭제가 완료되었습니다.");
     } catch (error) {

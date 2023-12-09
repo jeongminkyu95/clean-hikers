@@ -7,11 +7,10 @@ class Mountain {
 
   static async findData(mountain, location, level) {
     const regex = (pattern) => new RegExp(`.*${pattern}.*`);
-    // console.log(mountain, location, level);
     const mountainRegex = regex(mountain);
     const locationRegex = regex(location);
     const difficultyRegex = regex(level);
-    var searchJson = {};
+    let searchJson = {};
 
     if (mountain) {
       searchJson.name = { $regex: mountainRegex };

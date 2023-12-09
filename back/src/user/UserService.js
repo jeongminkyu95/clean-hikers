@@ -1,6 +1,6 @@
 import { User } from "../mongoDB/index.js";
 import bcrypt from "bcrypt";
-import { v4 as uuidv4 } from "uuid";
+import { v4 } from "uuid";
 import jwt from "jsonwebtoken";
 import {
   DuplicateEmailError,
@@ -28,7 +28,7 @@ class UserService {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // id 생성
-    const id = uuidv4();
+    const id = v4();
 
     const newUser = { id, email, nickname, password: hashedPassword };
 
@@ -111,7 +111,7 @@ class UserService {
   }
 
   // 닉네임 중복확인
-  static async findUserBynick(nick) {
+  static async findUserByNick(nick) {
     try {
       // 닉네임 중복확인
       const user = await User.checkByNick(nick);

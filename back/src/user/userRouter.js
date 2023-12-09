@@ -34,7 +34,7 @@ userRouter.post("/email-check", async (req, res, next) => {
 userRouter.post("/nick-check", async (req, res, next) => {
   try {
     // 닉네임 조회
-    const nickExist = await UserService.findUserBynick(req.body.nickname);
+    const nickExist = await UserService.findUserByNick(req.body.nickname);
     if (!nickExist) {
       res.status(201).json({ message: "사용할 수 있는 닉네임입니다" });
     } else {

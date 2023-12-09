@@ -59,7 +59,7 @@ class UserService {
     }
 
     // 탈퇴한 유저라면 로그인 불가
-    throwErrorIfDataExists(userEmail.deleted == true, UserNotFoundError);
+    throwErrorIfDataExists(userEmail.deleted, UserNotFoundError);
 
     const secretKey = process.env.JWT_SECRET_KEY;
 
@@ -86,7 +86,7 @@ class UserService {
     throwErrorIfDataExists(!user, UserNotFoundError);
 
     // 조회된 유저가 탈퇴한 상태라면 UserNotFoundError 에러
-    throwErrorIfDataExists(user.deleted == true, UserNotFoundError);
+    throwErrorIfDataExists(user.deleted, UserNotFoundError);
 
     return user;
   }

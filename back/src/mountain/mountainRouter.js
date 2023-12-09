@@ -15,7 +15,6 @@ mountainRouter.get("/detail", async function (req, res, next) {
     const result = await MountainService.readData(queryData);
 
     res.status(200).json(result);
-    // const readData = await
   } catch (error) {
     next(error);
   }

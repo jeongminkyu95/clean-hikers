@@ -13,32 +13,28 @@ import { throwErrorIfDataExists } from "../utils/throwErrorIfDataExists.js";
 class UserService {
   // 유저 추가
   static async addUser({ email, nickname, password }) {
-    try {
-      // 유저 조회 by email
-      const user = await User.checkByEmail(email);
+    // 유저 조회 by email
+    const user = await User.checkByEmail(email);
 
-      // 이미 존재하는 유저라면 throw 에러
-      throwErrorIfDataExists(user, DuplicateEmailError);
+    // 이미 존재하는 유저라면 throw 에러
+    throwErrorIfDataExists(user, DuplicateEmailError);
 
-      const nickExist = await User.checkByNick(nickname);
+    const nickExist = await User.checkByNick(nickname);
 
-      // 이미 존재하는 닉네임이라면 throw 에러
-      throwErrorIfDataExists(nickExist, DuplicateNickError);
+    // 이미 존재하는 닉네임이라면 throw 에러
+    throwErrorIfDataExists(nickExist, DuplicateNickError);
 
-      // 비밀번호 해쉬화
-      const hashedPassword = await bcrypt.hash(password, 10);
+    // 비밀번호 해쉬화
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-      // id 생성
-      const id = v4();
+    // id 생성
+    const id = v4();
 
-      const newUser = { id, email, nickname, password: hashedPassword };
+    const newUser = { id, email, nickname, password: hashedPassword };
 
-      // 유저 생성
-      const createdNewUser = await User.create({ newUser });
-      return createdNewUser;
-    } catch (error) {
-      throw error;
-    }
+    // 유저 생성
+    const createdNewUser = await User.create({ newUser });
+    return createdNewUser;
   }
 
   // 로그인

@@ -4,8 +4,6 @@ import { MountainService } from "./MountainService.js";
 const mountainRouter = Router();
 
 mountainRouter.get("/", function (req, res, next) {
-  // console.log(req.query);
-  // console.log(req.params);
   res.send("this is mountainRouter");
 });
 

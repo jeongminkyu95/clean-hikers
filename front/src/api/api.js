@@ -1,8 +1,9 @@
 import axios from "axios";
 
 const backPort = "5000";
-const autoBaseUrl = window.location.hostname;
-const serverUrl = `http://${autoBaseUrl}:${backPort}/`;
+// const autoBaseUrl = window.location.hostname;
+// const serverUrl = `http://${autoBaseUrl}:${backPort}/`;
+const serverUrl = `https://port-0-clean-hikers-server-lyft4b93ef6ca26e.sel5.cloudtype.app/`;
 
 async function get(endpoint, params = "") {
   console.log(`GET ${serverUrl + endpoint + "/" + params}`);
